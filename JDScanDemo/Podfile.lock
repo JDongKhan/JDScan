@@ -1,0 +1,31 @@
+PODS:
+  - JDScan (1.0):
+    - JDScan/All (= 1.0)
+  - JDScan/All (1.0):
+    - JDScan/UI
+    - JDScan/ZXing
+  - JDScan/UI (1.0)
+  - JDScan/ZXing (1.0):
+    - ZXingObjC (= 3.1.1)
+  - ZXingObjC (3.1.1):
+    - ZXingObjC/All (= 3.1.1)
+  - ZXingObjC/All (3.1.1)
+
+DEPENDENCIES:
+  - JDScan (from `../`)
+
+SPEC REPOS:
+  http://opensource.cnsuning.com/thirdparty/thirdpartyspecs.git:
+    - ZXingObjC
+
+EXTERNAL SOURCES:
+  JDScan:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  JDScan: 4ef8f09c5f72f27b976aed3690cca6dcaa433ab6
+  ZXingObjC: c291fcc548db6b211759f307936c4dbab9ae1e79
+
+PODFILE CHECKSUM: 7c31646b46b6fa832424eccc340f8087b5a410bf
+
+COCOAPODS: 1.7.3

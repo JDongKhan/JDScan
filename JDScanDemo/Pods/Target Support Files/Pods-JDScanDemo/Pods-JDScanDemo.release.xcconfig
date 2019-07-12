@@ -1,0 +1,9 @@
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/../../JDScan/Frameworks"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/JDScan" "${PODS_ROOT}/Headers/Public/ZXingObjC"
+LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/JDScan" "${PODS_CONFIGURATION_BUILD_DIR}/ZXingObjC"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"JDScan" -l"ZXingObjC" -l"c" -l"c++" -l"c++abi" -framework "AVFoundation" -framework "CoreGraphics" -framework "CoreMedia" -framework "CoreVideo" -framework "ImageIO" -framework "QuartzCore" -framework "opencv2"
+PODS_BUILD_DIR = ${BUILD_DIR}
+PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
+PODS_ROOT = ${SRCROOT}/Pods
