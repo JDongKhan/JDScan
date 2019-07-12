@@ -51,7 +51,7 @@
     cv::medianBlur(greyGrey,dstGrey,7);
     
     //二值化
-    binarization(dstGrey,width,height);
+    blockBinarization(dstGrey,width,height);
  
     //转换成image
     UIImage *resultImage = [self UIImageFromCVMat:dstGrey];
@@ -59,19 +59,19 @@
     return resultImage;
 }
 
-void binarization(cv::Mat srcImage,int width, int height) {
+//整体二值化
+void wholeBinarization(cv::Mat srcImage, cv::Mat dstImage) {
     //计算阈值
-    //    IplImage grey = dstGrey;
-    //    unsigned char* dataImage = (unsigned char*)grey.imageData;
-    //    int threshold = Otsu(dataImage, grey.width, grey.height);
-    //
-    //    //printf("阈值：%d\n",threshold);
-    //    // 开始整体二值化
-    //    cv::Mat matBinary;
-    //    cv::threshold(dstGrey, matBinary, threshold, 255, cv::THRESH_BINARY);
-    //
-    
-    //分块二值化
+    IplImage grey = srcImage;
+    unsigned char* dataImage = (unsigned char*)grey.imageData;
+    int threshold = Otsu(dataImage, grey.width, grey.height);
+    //printf("阈值：%d\n",threshold);
+    // 开始整体二值化
+    cv::threshold(srcImage, dstImage, threshold, 255, cv::THRESH_BINARY);
+}
+
+//分块二值化
+void blockBinarization(cv::Mat srcImage,int width, int height) {
     cv::Mat binMat(height, width, CV_8UC1);
     int rectWidth = width / 5;
     int rectHeight = height / 5;
