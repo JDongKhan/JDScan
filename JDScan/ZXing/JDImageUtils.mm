@@ -51,7 +51,7 @@
     cv::medianBlur(greyGrey,dstGrey,7);
     
     //二值化
-    blockBinarization(dstGrey,width,height);
+    blockBinarization(dstGrey,dstGrey,width,height);
  
     //转换成image
     UIImage *resultImage = [self UIImageFromCVMat:dstGrey];
@@ -71,7 +71,7 @@ void wholeBinarization(cv::Mat srcImage, cv::Mat dstImage) {
 }
 
 //分块二值化
-void blockBinarization(cv::Mat srcImage,int width, int height) {
+void blockBinarization(cv::Mat srcImage,cv::Mat dstImage,int width, int height) {
     cv::Mat binMat(height, width, CV_8UC1);
     int rectWidth = width / 5;
     int rectHeight = height / 5;
@@ -92,10 +92,12 @@ void blockBinarization(cv::Mat srcImage,int width, int height) {
     cv::Rect LBRect(0, centerY - 1, centerX, centerY);
     cv::Rect RBRect(centerX - 1, centerY - 1, centerX, centerY);
     
-    cv::threshold(srcImage(LTRect), srcImage(LTRect), threshLT, 255, CV_THRESH_BINARY);
-    cv::threshold(srcImage(RTRect), srcImage(RTRect), threshRT, 255, CV_THRESH_BINARY);
-    cv::threshold(srcImage(LBRect), srcImage(LBRect), threshLB, 255, CV_THRESH_BINARY);
-    cv::threshold(srcImage(RBRect), srcImage(RBRect), threshRB, 255, CV_THRESH_BINARY);
+    dstImage = srcImage;
+    
+    cv::threshold(srcImage(LTRect), dstImage(LTRect), threshLT, 255, CV_THRESH_BINARY);
+    cv::threshold(srcImage(RTRect), dstImage(RTRect), threshRT, 255, CV_THRESH_BINARY);
+    cv::threshold(srcImage(LBRect), dstImage(LBRect), threshLB, 255, CV_THRESH_BINARY);
+    cv::threshold(srcImage(RBRect), dstImage(RBRect), threshRB, 255, CV_THRESH_BINARY);
 }
 
 
