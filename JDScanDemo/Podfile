@@ -1,7 +1,5 @@
 platform :ios, '8.0'
 
-source 'http://opensource.cnsuning.com/thirdparty/thirdpartyspecs.git'#第三方
-
 target 'JDScanDemo' do
     pod 'JDScan', path:"../"
 #    pod 'JDScan/ZXing', path:"../"
