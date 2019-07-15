@@ -8,14 +8,18 @@
 
 
 #import <UIKit/UIKit.h>
-#import "JDScanLineAnimation.h"
-#import "JDScanNetAnimation.h"
+#import "JDScanAnimation.h"
 #import "JDScanViewStyle.h"
 
 /**
  扫码区域显示效果
  */
 @interface JDScanView : UIView
+
+/**
+ 扫描区域的rect
+ */
+@property (nonatomic, assign, readonly) CGRect scanRect;
 
 /**
  @brief  初始化
@@ -46,26 +50,21 @@
  */
 - (void)stopScanAnimation;
 
-//
-
 /**
  @brief  根据矩形区域，获取Native扫码识别兴趣区域
  @param view  视频流显示UIView
- @param style 效果界面参数
+ @param scanRect 扫描的区域
  @return 识别区域
  */
-+ (CGRect)getScanRectWithPreView:(UIView*)view style:(JDScanViewStyle*)style;
-
-
++ (CGRect)getScanRectWithPreView:(UIView*)view scanRect:(CGRect)scanRect;
 
 /**
  根据矩形区域，获取ZXing库扫码识别兴趣区域
 
  @param view 视频流显示视图
- @param style 效果界面参数
+ @param scanRect 扫描的区域
  @return 识别区域
  */
-+ (CGRect)getZXingScanRectWithPreView:(UIView*)view style:(JDScanViewStyle*)style;
-
++ (CGRect)getZXingScanRectWithPreView:(UIView*)view scanRect:(CGRect)scanRect;
 
 @end

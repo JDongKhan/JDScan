@@ -9,10 +9,8 @@
 #import "JDZXingWrapper.h"
 #import "JDZXCaptureDelegate.h"
 #import "JDZXCapture.h"
-#import <ZXingObjC/ZXResult.h>
 
-
-typedef void(^JDScanBlock)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg);
+typedef void(^JDScanBlock)(JDScanResult *result);
 
 @interface JDZXingWrapper() <JDZXCaptureDelegate>
 
@@ -44,14 +42,14 @@ typedef void(^JDScanBlock)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *
     return self;
 }
 
-- (id)initWithPreView:(UIView*)preView block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg))block {
+- (id)initWithPreView:(UIView*)preView block:(void(^)(JDScanResult *result))block {
     if (self = [super init]) {
         
         self.capture = [[JDZXCapture alloc] init];
         self.capture.camera = self.capture.back;
         self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
-        
+        self.scale = 1.0f;
         self.capture.delegate = self;
         
         self.block = block;
@@ -68,28 +66,6 @@ typedef void(^JDScanBlock)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *
     return self;
 }
 
-#pragma mark - 捏合手势拉近拉远
-- (void)zoomForView:(UIView *)view {
-     UIPinchGestureRecognizer  *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognizerClicked:)];
-    view.userInteractionEnabled = YES;
-    [view addGestureRecognizer:pinchGesture];
-}
-
-- (void)pinchGestureRecognizerClicked:(UIPinchGestureRecognizer *)pinch {
-    self.scale += (pinch.scale > 1.0 ? 0.1 : -0.1);
-    self.scale = MAX(self.scale, 1.0);
-    self.scale = MIN([self maxZoomFactor], self.scale);
-    NSError *error = nil;
-    if (![self.capture.captureDevice lockForConfiguration:&error] || error) {
-        return;
-    }
-    self.capture.captureDevice.videoZoomFactor = self.scale;
-    [self.capture.captureDevice unlockForConfiguration];
-}
-
-- (CGFloat)maxZoomFactor {
-    return MIN(self.capture.captureDevice.activeFormat.videoMaxZoomFactor, 8.0f);
-}
 
 - (void)setScanRect:(CGRect)scanRect {
     self.capture.scanRect = scanRect;
@@ -98,8 +74,6 @@ typedef void(^JDScanBlock)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *
 - (void)start {
     self.bNeedScanResult = YES;
     [self.capture start];
-    [self autoFocus];
-//    [self autoZoom];
 }
 
 - (void)stop {
@@ -115,22 +89,70 @@ typedef void(^JDScanBlock)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *
     [self.capture changeTorch];
 }
 
-- (void)autoFocus {
-    if (self.focusTimer == nil || ![self.focusTimer isValid]) {
-        self.focusTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(startFocus) userInfo:nil repeats:YES];
+#pragma mark - ZXCaptureDelegate Methods
+
+- (void)captureResult:(JDZXCapture *)capture result:(JDScanResult *)result {
+    if (!result) return;
+    if (self.bNeedScanResult == NO) {
+        return;
+    }
+    if (_block) {
+        [self stop];
+        _block(result);
+    }    
+}
+
+- (void)captureResult:(JDZXCapture *)capture preImage:(UIImage *)preImage {
+    if (self.preImageBlock != nil) {
+        self.preImageBlock(preImage);
     }
 }
 
-- (void)startFocus {
-    [self.capture autoFocus];
+
+#pragma mark  ---------- 功能方法 ---------------
++ (UIImage*)createCodeWithString:(NSString*)str size:(CGSize)size CodeFomart:(ZXBarcodeFormat)format {
+    return [JDZXCapture createCodeWithString:str size:size CodeFomart:format];
 }
 
-- (void)stopFocus {
-    [_focusTimer invalidate];
-    _focusTimer = nil;
++ (void)recognizeImage:(UIImage *)image
+                 block:(void(^)(JDScanResult *result))block {
+    JDScanResult *result = [JDZXCapture recognizeImage:image.CGImage invert:NO] ;
+    if (result == nil) {
+        block(nil);
+        return;
+    }
+    block(result);
 }
 
+- (void)dealloc {
+    [self stopFocus];
+    [self stopZoom];
+}
 
+#pragma mark -------- 捏合手势拉近拉远 ---
+- (void)zoomForView:(UIView *)view {
+    UIPinchGestureRecognizer  *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognizer:)];
+    view.userInteractionEnabled = YES;
+    [view addGestureRecognizer:pinchGesture];
+}
+
+- (void)pinchGestureRecognizer:(UIPinchGestureRecognizer *)pinch {
+    self.scale += (pinch.scale > 1.0 ? 0.1 : -0.1);
+    self.scale = MAX(self.scale, 1.0);
+    self.scale = MIN([self maxZoomFactor], self.scale);
+    NSError *error = nil;
+    if (![self.capture.captureDevice lockForConfiguration:&error] || error) {
+        return;
+    }
+    self.capture.captureDevice.videoZoomFactor = self.scale;
+    [self.capture.captureDevice unlockForConfiguration];
+}
+
+- (CGFloat)maxZoomFactor {
+    return MIN(self.capture.captureDevice.activeFormat.videoMaxZoomFactor, 8.0f);
+}
+
+#pragma mark -------- zoom ---
 - (void)autoZoom {
     if (self.zoomTimer == nil || ![self.zoomTimer isValid]) {
         self.zoomTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(startZoom) userInfo:nil repeats:NO];
@@ -160,48 +182,32 @@ typedef void(^JDScanBlock)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *
 }
 
 - (void)stopZoom {
+    if (_zoomTimer == nil) {
+        return;
+    }
     [_zoomTimer invalidate];
     _zoomTimer = nil;
 }
 
+#pragma mark -------- focus ---
 
-#pragma mark - ZXCaptureDelegate Methods
+- (void)autoFocus {
+    if (self.focusTimer == nil || ![self.focusTimer isValid]) {
+        self.focusTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(startFocus) userInfo:nil repeats:YES];
+    }
+}
 
-- (void)captureResult:(JDZXCapture *)capture result:(JDCaptureResult *)result scanImage:(UIImage *)img {
-    if (!result) return;
-    if (self.bNeedScanResult == NO) {
+- (void)startFocus {
+    [self.capture autoFocus];
+}
+
+- (void)stopFocus {
+    if (_focusTimer == nil) {
         return;
     }
-    if (_block) {
-        [self stop];
-        _block(result.type,result.text,img);
-    }    
+    [_focusTimer invalidate];
+    _focusTimer = nil;
 }
 
-- (void)captureCameraPreImage:(UIImage *)preImage {
-    if (self.preImageBlock != nil) {
-        self.preImageBlock(preImage);
-    }
-}
-
-
-+ (UIImage*)createCodeWithString:(NSString*)str size:(CGSize)size CodeFomart:(ZXBarcodeFormat)format {
-    return [JDZXCapture createCodeWithString:str size:size CodeFomart:format];
-}
-
-+ (void)recognizeImage:(UIImage *)image
-                 block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *text))block {
-    JDCaptureResult *result = [JDZXCapture recognizeImage:image.CGImage invert:NO] ;
-    if (result == nil) {
-        block(kBarcodeFormatQRCode,nil);
-        return;
-    }
-    block(result.type,result.text);
-}
-
-- (void)dealloc {
-    [self stopFocus];
-    [self stopZoom];
-}
 
 @end

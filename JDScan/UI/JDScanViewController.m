@@ -16,8 +16,6 @@
 
 @property (nonatomic, strong) UIImageView *imageView;
 
-@property (nonatomic, strong) UIButton *openOrCloseButton;
-
 @end
 
 @implementation JDScanViewController
@@ -26,31 +24,57 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     self.view.backgroundColor = [UIColor blackColor];
-    self.title = @"ZXing";
+    self.title = @"扫一扫";
     
     self.videoView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame))];
     self.videoView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.videoView];
     
+    //扫描view
     [self drawScanView];
     
-    self.openOrCloseButton = [[UIButton alloc] init];
-    CGRect rect = [JDScanView getZXingScanRectWithPreView:self.view style:_style];
-    self.openOrCloseButton.frame = CGRectMake(100, rect.origin.y, 100, 50);
-    self.openOrCloseButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.openOrCloseButton setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_flash_nor"] forState:UIControlStateNormal];
-    [self.openOrCloseButton setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_scan_off"] forState:UIControlStateSelected];
-    [self.openOrCloseButton addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.openOrCloseButton];
+    //开启灯光按钮
+    if (self.lightButton == nil && !self.hiddenLightButton) {
+        UIButton *button = [[UIButton alloc] init];
+        CGRect scanRect  = self.qRScanView.scanRect;
+        button.frame = CGRectMake((self.view.frame.size.width - 100)/2, CGRectGetMaxY(scanRect)+20, 100, 50);
+        button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [button setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_flash_nor"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_scan_off"] forState:UIControlStateSelected];
+        [button addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
+        self.lightButton = button;
+    }
     
+    //预览view
     _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 200, 200)];
     _imageView.hidden = YES;
     [self.view addSubview:_imageView];
+    
+    //添加通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+- (void)willEnterForeground {
+    [self start];
+}
+
+- (void)didEnterBackground {
+    [self stop];
+}
+
+- (void)setLightButton:(UIButton *)lightButton {
+    [_lightButton removeFromSuperview];
+    _lightButton = lightButton;
+    [self.view addSubview:self.lightButton];
+}
+
+- (void)setHiddenLightButton:(BOOL)hiddenLightButton {
+    self.lightButton.hidden = YES;
 }
 
 - (void)setIsNeedScanImage:(BOOL)isNeedScanImage {
@@ -85,46 +109,52 @@
     [_qRScanView startDeviceReadyingWithText:_cameraWakeMessage];
 }
 
-- (void)restartDevice {
-    [_zxingObj start];
-}
-
 //启动设备
 - (void)startScan {
     if (!_zxingObj) {
         __weak __typeof(self) weakSelf = self;
-        _zxingObj = [[JDZXingWrapper alloc]initWithPreView:self.videoView block:^(ZXBarcodeFormat barcodeFormat, NSString *str, UIImage *scanImg) {
-            JDScanResult *result = [[JDScanResult alloc]init];
-            result.strScanned = str;
-            result.imgScanned = scanImg;
-            result.strBarCodeType = [weakSelf convertCodeFormat:barcodeFormat];
+        _zxingObj = [[JDZXingWrapper alloc]initWithPreView:self.videoView block:^(JDScanResult *result) {
             [weakSelf scanResultWithArray:@[result]];
         }];
         self.zxingObj.preImageBlock = ^(UIImage *preImage) {
             weakSelf.imageView.image = preImage;
         };
         [_zxingObj zoomForView:self.view];
-        if (_isOpenInterestRect) {
+        if (_onlyScanCenterRect) {
             //设置只识别框内区域
-            CGRect cropRect = [JDScanView getZXingScanRectWithPreView:self.videoView style:_style];
+            CGRect cropRect = [JDScanView getZXingScanRectWithPreView:self.videoView scanRect:self.qRScanView.scanRect];
             [_zxingObj setScanRect:cropRect];
         }
     }
-    [_zxingObj start];
-    [_qRScanView stopDeviceReadying];
-    [_qRScanView startScanAnimation];
+    //开始扫描
+    [self start];
+    
+    if (_style.supportAutoZoom) {
+        [_zxingObj autoZoom];
+    }
+    if (_style.supportAutoFocus) {
+        [_zxingObj autoFocus];
+    }
     self.view.backgroundColor = [UIColor clearColor];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [self stopScan];
+    [self stop];
 }
 
-- (void)stopScan {
+- (void)start {
+    [_zxingObj start];
+    [_qRScanView stopDeviceReadying];
+    [_qRScanView startScanAnimation];
+}
+
+- (void)stop {
     [_zxingObj stop];
     [_qRScanView stopScanAnimation];
+    //停止扫描后将灯光按钮还原
+    _lightButton.selected = NO;
 }
 
 #pragma mark -扫码结果处理
@@ -165,11 +195,7 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDZXingWrapper recognizeImage:image block:^(ZXBarcodeFormat barcodeFormat, NSString *str) {
-        JDScanResult *result = [[JDScanResult alloc]init];
-        result.strScanned = str;
-        result.imgScanned = image;
-        result.strBarCodeType = [self convertCodeFormat:barcodeFormat];
+    [JDZXingWrapper recognizeImage:image block:^(JDScanResult *result) {
         [weakSelf scanResultWithArray:@[result]];
     }];
 
@@ -178,55 +204,6 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     NSLog(@"imagePickerControllerDidCancel");
     [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (NSString*)convertCodeFormat:(ZXBarcodeFormat)barCodeFormat {
-    NSString *strAVMetadataObjectType = nil;
-    
-    switch (barCodeFormat) {
-        case kBarcodeFormatQRCode:
-            strAVMetadataObjectType = AVMetadataObjectTypeQRCode;
-            break;
-        case kBarcodeFormatEan13:
-            strAVMetadataObjectType = AVMetadataObjectTypeEAN13Code;
-            break;
-        case kBarcodeFormatEan8:
-            strAVMetadataObjectType = AVMetadataObjectTypeEAN8Code;
-            break;
-        case kBarcodeFormatPDF417:
-            strAVMetadataObjectType = AVMetadataObjectTypePDF417Code;
-            break;
-        case kBarcodeFormatAztec:
-            strAVMetadataObjectType = AVMetadataObjectTypeAztecCode;
-            break;
-        case kBarcodeFormatCode39:
-            strAVMetadataObjectType = AVMetadataObjectTypeCode39Code;
-            break;
-        case kBarcodeFormatCode93:
-            strAVMetadataObjectType = AVMetadataObjectTypeCode93Code;
-            break;
-        case kBarcodeFormatCode128:
-            strAVMetadataObjectType = AVMetadataObjectTypeCode128Code;
-            break;
-        case kBarcodeFormatDataMatrix:
-            strAVMetadataObjectType = AVMetadataObjectTypeDataMatrixCode;
-            break;
-        case kBarcodeFormatITF:
-            strAVMetadataObjectType = AVMetadataObjectTypeITF14Code;
-            break;
-        case kBarcodeFormatRSS14:
-            break;
-        case kBarcodeFormatRSSExpanded:
-            break;
-        case kBarcodeFormatUPCA:
-            break;
-        case kBarcodeFormatUPCE:
-            strAVMetadataObjectType = AVMetadataObjectTypeUPCECode;
-            break;
-        default:
-            break;
-    }
-    return strAVMetadataObjectType;
 }
 
 - (void)requestCameraPemissionWithResult:(void(^)(BOOL granted))completion {

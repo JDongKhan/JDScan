@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "JDScanResult.h"
 
 #import "ZXBarcodeFormat.h"
 
@@ -25,7 +26,7 @@
  @param block 返回识别结果
  @return 返回封装对象
  */
-- (instancetype)initWithPreView:(UIView*)preView block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg))block;
+- (instancetype)initWithPreView:(UIView*)preView block:(void(^)(JDScanResult *result))block;
 
 
 //添加手势缩放功能
@@ -55,12 +56,20 @@
  */
 - (void)openTorch:(BOOL)on_off;
 
-
 /*!
  *  根据闪光灯状态，自动切换
  */
 - (void)openOrCloseTorch;
 
+/**
+ 自动对焦
+ */
+- (void)autoFocus;
+
+/**
+ 自动缩放
+ */
+- (void)autoZoom;
 
 /*!
  *  生成二维码
@@ -84,6 +93,6 @@
  *  @param block 返回识别结果
  */
 + (void)recognizeImage:(UIImage*)image
-                 block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *text))block;
+                 block:(void(^)(JDScanResult *result))block;
 
 @end

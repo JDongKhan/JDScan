@@ -1,5 +1,5 @@
 //
-//  SettingViewController.h
+//  DemoCreateBarCodeViewController.h
 //  JDScanDemo
 //
 //  Created by JD on 2019 /5/7.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingViewController : UIViewController
+@interface DemoCreateBarCodeViewController : UIViewController
 
 @end

@@ -1,18 +1,17 @@
 //
-//  CreateBarCodeViewController.m
+//  DemoCreateBarCodeViewController.m
 //  JDScanDemo
 //
 //  Created by JD on 2019 /5/7.
 //  Copyright © 2019 年 JD. All rights reserved.
 //
 
-#import "CreateBarCodeViewController.h"
+#import "DemoCreateBarCodeViewController.h"
 #import "JDAlertAction.h"
 #import "JDZXingWrapper.h"
 #import "UIImageView+CornerRadius.h"
-#import "CodeType.h"
 
-@interface CreateBarCodeViewController ()
+@interface DemoCreateBarCodeViewController ()
 
 //二维码
 @property (nonatomic, strong) UIView *qrView;
@@ -26,7 +25,7 @@
 
 @end
 
-@implementation CreateBarCodeViewController
+@implementation DemoCreateBarCodeViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,8 +39,7 @@
     [self showSetttingButton];
 }
 
-- (void)showSetttingButton
-{
+- (void)showSetttingButton {
     //选择码扫码类型的按钮
     //把右侧的两个按钮添加到rightBarButtonItem
     UIButton *rightBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 30)];
@@ -53,8 +51,7 @@
     self.navigationItem.rightBarButtonItem = rightCunstomButtonView;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     //二维码
@@ -92,10 +89,8 @@
     
 }
 
-- (void)newCodeChooose
-{
+- (void)newCodeChooose {
     __weak __typeof(self) weakSelf = self;
-    
     [JDAlertAction showActionSheetWithTitle:@"" message:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitle:@[@"二维码+logo",@"二维码前景颜色+背景颜色",@"code13-商品条形码",@"支付宝付款条形码(code128)"] chooseBlock:^(NSInteger buttonIdx) {
         
         switch (buttonIdx) {
@@ -141,7 +136,7 @@
     logImage.image =logoImg;
     CGFloat diff  =2;
     logImage.frame = CGRectMake(diff, diff, size.width - 2 * diff, size.height - 2 * diff);
-    
+
     [backImage addSubview:logImage];
     
     return backImage;

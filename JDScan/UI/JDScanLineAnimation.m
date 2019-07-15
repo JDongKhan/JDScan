@@ -13,6 +13,7 @@
     BOOL down;
     NSTimer * timer;
     BOOL isAnimationing;
+    UIImage *_animationImage;
 }
 
 @property (nonatomic,assign) CGRect animationRect;
@@ -20,6 +21,17 @@
 @end
 
 @implementation JDScanLineAnimation
+
+- (instancetype)initWithAnimationImage:(UIImage *)animationImage {
+    if (self = [super init]) {
+        _animationImage = animationImage;
+    }
+    return self;
+}
+
++ (instancetype)animationWithImage:(UIImage *)image {
+    return [[JDScanLineAnimation alloc] initWithAnimationImage:image];
+}
 
 - (void)stepAnimation {
     if (!isAnimationing) {
@@ -47,9 +59,7 @@
      }];
 }
 
-
-
-- (void)startAnimatingWithRect:(CGRect)animationRect InView:(UIView *)parentView Image:(UIImage*)image {
+- (void)startAnimatingWithRect:(CGRect)animationRect inView:(UIView *)parentView  {
     if (isAnimationing) {
         return;
     }
@@ -64,7 +74,7 @@
     CGFloat width = animationRect.size.width - 10;
     
     self.frame = CGRectMake(leftx, centery+2*num, width, 2);
-    self.image = image;
+    self.image = _animationImage;
     
     [parentView addSubview:self];
     [self startAnimating_UIViewAnimation];

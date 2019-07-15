@@ -10,6 +10,7 @@
 
 @interface JDScanNetAnimation() {
     BOOL isAnimationing;
+    UIImage *_animationImage;
 }
 
 @property (nonatomic,assign) CGRect animationRect;
@@ -27,6 +28,19 @@
         [self addSubview:self.scanImageView];
     }
     return self;
+}
+
+- (instancetype)initWithAnimationImage:(UIImage *)animationImage {
+    if (self = [super init]) {
+        _animationImage = animationImage;
+        self.clipsToBounds = YES;
+        [self addSubview:self.scanImageView];
+    }
+    return self;
+}
+
++ (instancetype)animationWithImage:(UIImage *)image {
+    return [[JDScanNetAnimation alloc] initWithAnimationImage:image];
 }
 
 - (UIImageView *)scanImageView {
@@ -59,8 +73,8 @@
 }
 
 
-- (void)startAnimatingWithRect:(CGRect)animationRect InView:(UIView *)parentView Image:(UIImage*)image {
-    [self.scanImageView setImage:image];
+- (void)startAnimatingWithRect:(CGRect)animationRect inView:(UIView *)parentView {
+    [self.scanImageView setImage:_animationImage];
     
     self.animationRect = animationRect;
     

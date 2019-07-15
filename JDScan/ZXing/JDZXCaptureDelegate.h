@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#import "JDScanResult.h"
 
 @class JDZXCapture;
-@class JDCaptureResult;
-
 @protocol JDZXCaptureDelegate <NSObject>
 
-- (void)captureResult:(JDZXCapture *)capture result:(JDCaptureResult *)result scanImage:(UIImage*)img;
+- (void)captureResult:(JDZXCapture *)capture result:(JDScanResult *)result;
 
 @optional
-- (void)captureSize:(JDZXCapture *)capture
-              width:(NSNumber *)width
-             height:(NSNumber *)height;
-
-
 - (void)captureCameraIsReady:(JDZXCapture *)capture;
 
-- (void)captureCameraPreImage:(UIImage *)preImage;
+- (void)captureResult:(JDZXCapture *)capture preImage:(UIImage *)preImage;
 
 @end

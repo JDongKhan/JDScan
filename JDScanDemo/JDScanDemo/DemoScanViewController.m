@@ -1,27 +1,26 @@
 //
-//  DIYScanViewController.m
+//  DemoScanViewController.m
 //  JDScanDemo
 //
 //  Created by JD on 2019 /5/7.
 //  Copyright © 2019 年 JD. All rights reserved.
 //
 
-#import "DIYScanViewController.h"
+#import "DemoScanViewController.h"
 #import "JDAlertAction.h"
 #import "ScanResultViewController.h"
 
 
-@interface DIYScanViewController ()
+@interface DemoScanViewController ()
 
 @end
 
-@implementation DIYScanViewController
+@implementation DemoScanViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.cameraWakeMessage = @"相机启动中";
-    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"调试" style:UIBarButtonItemStyleDone target:self action:@selector(setting)];
 }
 
@@ -37,23 +36,11 @@
         
         return;
     }
-    
-    //经测试，可以ZXing同时识别2个二维码，不能同时识别二维码和条形码
-    //    for (JDScanResult *result in array) {
-    //
-    //        NSLog(@"scanResult:%@",result.strScanned);
-    //    }
-    
     JDScanResult *scanResult = array[0];
-    
-    NSString*strResult = scanResult.strScanned;
-    
+    NSString *strResult = scanResult.text;
 //    self.scanImage = scanResult.imgScanned;
-    
     if (!strResult) {
-        
         [self popAlertMsgWithScanResult:nil];
-        
         return;
     }
     
@@ -65,24 +52,19 @@
 
 - (void)popAlertMsgWithScanResult:(NSString*)strResult {
     if (!strResult) {
-        
         strResult = @"识别失败";
     }
-    
     __weak __typeof(self) weakSelf = self;
     [JDAlertAction showAlertWithTitle:@"扫码内容" msg:strResult buttonsStatement:@[@"知道了"] chooseBlock:^(NSInteger buttonIdx) {
-        [weakSelf restartDevice];
+        [weakSelf start];
     }];
 }
 
 - (void)showNextVCWithScanResult:(JDScanResult*)strResult {
     ScanResultViewController *vc = [ScanResultViewController new];
-    vc.imgScan = strResult.imgScanned;
-    
-    vc.strScan = strResult.strScanned;
-    
-    vc.strCodeType = strResult.strBarCodeType;
-    
+    vc.imgScan = strResult.image;
+    vc.strScan = strResult.text;
+    vc.strCodeType = strResult.type;
     [self.navigationController pushViewController:vc animated:YES];
 }
 

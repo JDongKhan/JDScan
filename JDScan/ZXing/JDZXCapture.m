@@ -103,7 +103,7 @@
     }
 
     self.onScreen = YES;
-//    [self startStop];
+    [self startStop];
   } else if ([key isEqualToString:kCAOnOrderOut]) {
     if (self.orderOutSkip) {
       self.orderOutSkip--;
@@ -111,7 +111,7 @@
     }
 
     self.onScreen = NO;
-//    [self startStop];
+    [self startStop];
   }
 }
 
@@ -144,7 +144,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     //识别原生图片
-    JDCaptureResult *result = [JDZXCapture recognizeImage:rotatedImage invert:self.invert];
+    JDScanResult *result = [JDZXCapture recognizeImage:rotatedImage invert:self.invert];
     //识别识别，开始使用opencv处理
     if (result == nil) {
         //将图片处理一下下
@@ -154,10 +154,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         result = [JDZXCapture recognizeImage:rotatedImage invert:self.invert];
     }
       
-    if (self.delegate && [self.delegate respondsToSelector:@selector(captureCameraPreImage:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(captureResult:preImage:)]) {
         UIImage *image = [UIImage imageWithCGImage:rotatedImage];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate captureCameraPreImage:image];
+            [self.delegate captureResult:self preImage:image];
         });
     }
       
@@ -179,8 +179,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
     if (result) {
       UIImage *image = [UIImage imageWithCGImage:rotatedImage];
+      result.image = image;
       dispatch_async(dispatch_get_main_queue(), ^{
-          [self.delegate captureResult:self result:result scanImage:image];
+          [self.delegate captureResult:self result:result];
       });
     }
     
@@ -193,15 +194,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
     @autoreleasepool {
         if ([metadataObjects count]) {
-            JDCaptureResult *result = nil;
+            JDScanResult *result = nil;
             for (AVMetadataObject *obj in metadataObjects) {
                 if ([obj isKindOfClass:[AVMetadataMachineReadableCodeObject class]]) {
                     AVMetadataMachineReadableCodeObject *codeObj = (AVMetadataMachineReadableCodeObject *)obj;
-                    result = [[JDCaptureResult alloc] init];
+                    result = [[JDScanResult alloc] init];
                     result.text = [codeObj.stringValue copy];
-                    result.type = [JDZXCapture ZXBarcodeFormatFromMetadataObjectType:[codeObj.type copy]];
+                    result.type = [codeObj.type copy];
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.delegate captureResult:self result:result scanImage:nil];
+                        [self.delegate captureResult:self result:result];
                     });
                     break;
                 }
@@ -253,7 +254,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     if (self.session.running) {
-        // [self.layer removeFromSuperlayer];
         [self.session stopRunning];
     }
     self.running = NO;
@@ -275,7 +275,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   }
 }
 
-+ (JDCaptureResult *)recognizeImage:(CGImageRef)image invert:(BOOL)invert {
++ (JDScanResult *)recognizeImage:(CGImageRef)image invert:(BOOL)invert {
     ZXCGImageLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:image];
     ZXHybridBinarizer *binarizer = [[ZXHybridBinarizer alloc] initWithSource:invert ? [source invert] : source];
     ZXBinaryBitmap *bitmap = [[ZXBinaryBitmap alloc] initWithBinarizer:binarizer];
@@ -283,11 +283,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     id<ZXReader> reader  = [ZXMultiFormatReader reader];
     ZXDecodeHints *_hints = [ZXDecodeHints hints];
     ZXResult *result = [reader decode:bitmap hints:_hints error:&error];
-    JDCaptureResult *newResult = nil;
+    JDScanResult *newResult = nil;
     if (result != nil) {
-        newResult = [[JDCaptureResult alloc] init];
+        newResult = [[JDScanResult alloc] init];
         newResult.text = result.text;
-        newResult.type = result.barcodeFormat;
+        newResult.type = [JDZXCapture strBarCodeType:result.barcodeFormat];
     }
     return newResult;
 }
@@ -342,10 +342,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)setDelegate:(id<JDZXCaptureDelegate>)delegate {
     _delegate = delegate;
-    //  if (delegate) {
-    //    self.hardStop = NO;
-    //  }
-    //  [self startStop];
+      if (delegate) {
+        self.hardStop = NO;
+      }
+      [self startStop];
 }
 
 - (void)setFocusMode:(AVCaptureFocusMode)focusMode {
@@ -585,6 +585,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         if ([self.captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
             [self.captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
         }
+        //曝光
         if ([self.captureDevice isExposurePointOfInterestSupported] && [self.captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
             [self.captureDevice setExposurePointOfInterest:pointOfInterest];
             [self.captureDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
@@ -647,43 +648,52 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
-+ (ZXBarcodeFormat)ZXBarcodeFormatFromMetadataObjectType:(NSString *)type {
-    if ([type isEqualToString:AVMetadataObjectTypeAztecCode]) {
-        return kBarcodeFormatAztec;
++ (NSString*)strBarCodeType:(ZXBarcodeFormat)barCodeFormat {
+    NSString *strAVMetadataObjectType = nil;
+    switch (barCodeFormat) {
+        case kBarcodeFormatQRCode:
+            strAVMetadataObjectType = AVMetadataObjectTypeQRCode;
+            break;
+        case kBarcodeFormatEan13:
+            strAVMetadataObjectType = AVMetadataObjectTypeEAN13Code;
+            break;
+        case kBarcodeFormatEan8:
+            strAVMetadataObjectType = AVMetadataObjectTypeEAN8Code;
+            break;
+        case kBarcodeFormatPDF417:
+            strAVMetadataObjectType = AVMetadataObjectTypePDF417Code;
+            break;
+        case kBarcodeFormatAztec:
+            strAVMetadataObjectType = AVMetadataObjectTypeAztecCode;
+            break;
+        case kBarcodeFormatCode39:
+            strAVMetadataObjectType = AVMetadataObjectTypeCode39Code;
+            break;
+        case kBarcodeFormatCode93:
+            strAVMetadataObjectType = AVMetadataObjectTypeCode93Code;
+            break;
+        case kBarcodeFormatCode128:
+            strAVMetadataObjectType = AVMetadataObjectTypeCode128Code;
+            break;
+        case kBarcodeFormatDataMatrix:
+            strAVMetadataObjectType = AVMetadataObjectTypeDataMatrixCode;
+            break;
+        case kBarcodeFormatITF:
+            strAVMetadataObjectType = AVMetadataObjectTypeITF14Code;
+            break;
+        case kBarcodeFormatRSS14:
+            break;
+        case kBarcodeFormatRSSExpanded:
+            break;
+        case kBarcodeFormatUPCA:
+            break;
+        case kBarcodeFormatUPCE:
+            strAVMetadataObjectType = AVMetadataObjectTypeUPCECode;
+            break;
+        default:
+            break;
     }
-    if ([type isEqualToString:AVMetadataObjectTypeUPCECode]) {
-        return kBarcodeFormatUPCE;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeQRCode]) {
-        return kBarcodeFormatQRCode;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypePDF417Code]) {
-        return kBarcodeFormatPDF417;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeITF14Code]) {
-        return kBarcodeFormatITF;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeEAN13Code]) {
-        return kBarcodeFormatEan13;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeEAN8Code]) {
-        return kBarcodeFormatEan8;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeDataMatrixCode]) {
-        return kBarcodeFormatDataMatrix;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeCode93Code]) {
-        return kBarcodeFormatCode93;
-    }
-    if ([type isEqualToString:AVMetadataObjectTypeCode39Code]) {
-        return kBarcodeFormatCode39;
-    }
-    return kBarcodeFormatQRCode;
+    return strAVMetadataObjectType;
 }
-
-@end
-
-
-@implementation JDCaptureResult
 
 @end

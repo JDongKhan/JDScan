@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		279A4FB62ED0185485366753 /* libPods-JDScanDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7762146DC28EEA633668E5FF /* libPods-JDScanDemo.a */; };
-		730D98331E8F8AAD001BBB6F /* StyleDIY.m in Sources */ = {isa = PBXBuildFile; fileRef = 730D98321E8F8AAD001BBB6F /* StyleDIY.m */; };
-		733CF2F81EE570F300AD1DC7 /* DIYScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 733CF2F71EE570F300AD1DC7 /* DIYScanViewController.m */; };
+		6935764722DC519200EF8A7A /* DemoStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6935764622DC519200EF8A7A /* DemoStyle.m */; };
+		733CF2F81EE570F300AD1DC7 /* DemoScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 733CF2F71EE570F300AD1DC7 /* DemoScanViewController.m */; };
 		7349377C1E1F6B02007DDD7A /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 734937741E1F6A6E007DDD7A /* libiconv.2.4.0.tbd */; };
 		734E165E1E237B2F00120818 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 734E165D1E237B2F00120818 /* README.md */; };
-		7354618D1E1E402600F9F7FC /* CreateBarCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7354618C1E1E402600F9F7FC /* CreateBarCodeViewController.m */; };
+		7354618D1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7354618C1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m */; };
 		735461991E1E44B900F9F7FC /* UIImageView+CornerRadius.m in Sources */ = {isa = PBXBuildFile; fileRef = 735461981E1E44B900F9F7FC /* UIImageView+CornerRadius.m */; };
 		73584FB21E1CD62300ED6A60 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FB11E1CD62300ED6A60 /* main.m */; };
 		73584FB51E1CD62300ED6A60 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FB41E1CD62300ED6A60 /* AppDelegate.m */; };
@@ -23,12 +23,10 @@
 		73584FF31E1CE4B900ED6A60 /* UIAlertView+JDAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FEC1E1CE4B900ED6A60 /* UIAlertView+JDAlertAction.m */; };
 		73584FF51E1CE4B900ED6A60 /* JDAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FF01E1CE4B900ED6A60 /* JDAlertAction.m */; };
 		73584FF81E1CECC700ED6A60 /* DemoListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FF71E1CECC700ED6A60 /* DemoListTableViewController.m */; };
-		73584FFB1E1CEE5000ED6A60 /* CodeType.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FFA1E1CEE5000ED6A60 /* CodeType.m */; };
 		735850111E1CFA5800ED6A60 /* ScanResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7358500F1E1CFA5800ED6A60 /* ScanResultViewController.m */; };
 		735850121E1CFA5800ED6A60 /* ScanResultViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 735850101E1CFA5800ED6A60 /* ScanResultViewController.xib */; };
 		738C86A61EA7687700689E04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738C86A51EA7687700689E04 /* Foundation.framework */; };
 		738C86A81EA7688300689E04 /* libz.1.1.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 738C86A71EA7688300689E04 /* libz.1.1.3.tbd */; };
-		739FD57C1E8F540C007D75D3 /* SettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 739FD57B1E8F540C007D75D3 /* SettingViewController.m */; };
 		77576ECA1FEF741F00578A6B /* JDPermissionSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 77576EB81FEF741E00578A6B /* JDPermissionSetting.m */; };
 		77576ECE1FEF741F00578A6B /* JDPermissionCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 77576EBF1FEF741E00578A6B /* JDPermissionCamera.m */; };
 		77576ECF1FEF741F00578A6B /* JDPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 77576EC01FEF741E00578A6B /* JDPermission.m */; };
@@ -37,18 +35,18 @@
 
 /* Begin PBXFileReference section */
 		5F97635BCA44FFDC4DF76740 /* Pods-JDScanDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JDScanDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-JDScanDemo/Pods-JDScanDemo.release.xcconfig"; sourceTree = "<group>"; };
+		6935764522DC519200EF8A7A /* DemoStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoStyle.h; sourceTree = "<group>"; };
+		6935764622DC519200EF8A7A /* DemoStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoStyle.m; sourceTree = "<group>"; };
 		6CEC1D273563FBA3D7419E06 /* Pods-LBXScanDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LBXScanDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LBXScanDemo/Pods-LBXScanDemo.release.xcconfig"; sourceTree = "<group>"; };
-		730D98311E8F8AAD001BBB6F /* StyleDIY.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyleDIY.h; sourceTree = "<group>"; };
-		730D98321E8F8AAD001BBB6F /* StyleDIY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyleDIY.m; sourceTree = "<group>"; };
-		733CF2F61EE570F300AD1DC7 /* DIYScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DIYScanViewController.h; sourceTree = "<group>"; };
-		733CF2F71EE570F300AD1DC7 /* DIYScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIYScanViewController.m; sourceTree = "<group>"; };
+		733CF2F61EE570F300AD1DC7 /* DemoScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoScanViewController.h; sourceTree = "<group>"; };
+		733CF2F71EE570F300AD1DC7 /* DemoScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoScanViewController.m; sourceTree = "<group>"; };
 		734937741E1F6A6E007DDD7A /* libiconv.2.4.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.2.4.0.tbd; path = usr/lib/libiconv.2.4.0.tbd; sourceTree = SDKROOT; };
 		734937761E1F6AA2007DDD7A /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		734937781E1F6AB1007DDD7A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7349377A1E1F6ABC007DDD7A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		734E165D1E237B2F00120818 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		7354618B1E1E402600F9F7FC /* CreateBarCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateBarCodeViewController.h; sourceTree = "<group>"; };
-		7354618C1E1E402600F9F7FC /* CreateBarCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateBarCodeViewController.m; sourceTree = "<group>"; };
+		7354618B1E1E402600F9F7FC /* DemoCreateBarCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoCreateBarCodeViewController.h; sourceTree = "<group>"; };
+		7354618C1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoCreateBarCodeViewController.m; sourceTree = "<group>"; };
 		735461971E1E44B900F9F7FC /* UIImageView+CornerRadius.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+CornerRadius.h"; sourceTree = "<group>"; };
 		735461981E1E44B900F9F7FC /* UIImageView+CornerRadius.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+CornerRadius.m"; sourceTree = "<group>"; };
 		73584FAD1E1CD62300ED6A60 /* JDScanDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JDScanDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,16 +66,11 @@
 		73584FF01E1CE4B900ED6A60 /* JDAlertAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JDAlertAction.m; sourceTree = "<group>"; };
 		73584FF61E1CECC700ED6A60 /* DemoListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoListTableViewController.h; sourceTree = "<group>"; };
 		73584FF71E1CECC700ED6A60 /* DemoListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoListTableViewController.m; sourceTree = "<group>"; };
-		73584FF91E1CEE5000ED6A60 /* CodeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodeType.h; sourceTree = "<group>"; };
-		73584FFA1E1CEE5000ED6A60 /* CodeType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CodeType.m; sourceTree = "<group>"; };
 		7358500E1E1CFA5800ED6A60 /* ScanResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanResultViewController.h; sourceTree = "<group>"; };
 		7358500F1E1CFA5800ED6A60 /* ScanResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanResultViewController.m; sourceTree = "<group>"; };
 		735850101E1CFA5800ED6A60 /* ScanResultViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanResultViewController.xib; sourceTree = "<group>"; };
-		735852E11E1CFC3300ED6A60 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		738C86A51EA7687700689E04 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		738C86A71EA7688300689E04 /* libz.1.1.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.1.3.tbd; path = usr/lib/libz.1.1.3.tbd; sourceTree = SDKROOT; };
-		739FD57A1E8F540C007D75D3 /* SettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingViewController.h; sourceTree = "<group>"; };
-		739FD57B1E8F540C007D75D3 /* SettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingViewController.m; sourceTree = "<group>"; };
 		739FD57D1E8F58D2007D75D3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		77576EB31FEF741E00578A6B /* JDPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JDPermission.h; sourceTree = "<group>"; };
 		77576EB41FEF741E00578A6B /* JDPermissionCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JDPermissionCamera.h; sourceTree = "<group>"; };
@@ -152,8 +145,9 @@
 		73584FAF1E1CD62300ED6A60 /* JDScanDemo */ = {
 			isa = PBXGroup;
 			children = (
+				6935764522DC519200EF8A7A /* DemoStyle.h */,
+				6935764622DC519200EF8A7A /* DemoStyle.m */,
 				77576EAE1FEF741E00578A6B /* JDPermissions */,
-				735852E11E1CFC3300ED6A60 /* PrefixHeader.pch */,
 				73584FB31E1CD62300ED6A60 /* AppDelegate.h */,
 				73584FB41E1CD62300ED6A60 /* AppDelegate.m */,
 				73584FBC1E1CD62300ED6A60 /* Assets.xcassets */,
@@ -162,21 +156,15 @@
 				735461961E1E44B900F9F7FC /* CornerRadiusCategory */,
 				73584FE51E1CE4B900ED6A60 /* JDAlertAction */,
 				73584FB01E1CD62300ED6A60 /* Supporting Files */,
-				739FD57A1E8F540C007D75D3 /* SettingViewController.h */,
-				739FD57B1E8F540C007D75D3 /* SettingViewController.m */,
 				73584FF61E1CECC700ED6A60 /* DemoListTableViewController.h */,
 				73584FF71E1CECC700ED6A60 /* DemoListTableViewController.m */,
-				730D98311E8F8AAD001BBB6F /* StyleDIY.h */,
-				730D98321E8F8AAD001BBB6F /* StyleDIY.m */,
-				733CF2F61EE570F300AD1DC7 /* DIYScanViewController.h */,
-				733CF2F71EE570F300AD1DC7 /* DIYScanViewController.m */,
-				7354618B1E1E402600F9F7FC /* CreateBarCodeViewController.h */,
-				7354618C1E1E402600F9F7FC /* CreateBarCodeViewController.m */,
+				733CF2F61EE570F300AD1DC7 /* DemoScanViewController.h */,
+				733CF2F71EE570F300AD1DC7 /* DemoScanViewController.m */,
+				7354618B1E1E402600F9F7FC /* DemoCreateBarCodeViewController.h */,
+				7354618C1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m */,
 				7358500E1E1CFA5800ED6A60 /* ScanResultViewController.h */,
 				7358500F1E1CFA5800ED6A60 /* ScanResultViewController.m */,
 				735850101E1CFA5800ED6A60 /* ScanResultViewController.xib */,
-				73584FF91E1CEE5000ED6A60 /* CodeType.h */,
-				73584FFA1E1CEE5000ED6A60 /* CodeType.m */,
 			);
 			path = JDScanDemo;
 			sourceTree = "<group>";
@@ -362,9 +350,9 @@
 				735461991E1E44B900F9F7FC /* UIImageView+CornerRadius.m in Sources */,
 				734E165E1E237B2F00120818 /* README.md in Sources */,
 				73584FB51E1CD62300ED6A60 /* AppDelegate.m in Sources */,
-				733CF2F81EE570F300AD1DC7 /* DIYScanViewController.m in Sources */,
-				73584FFB1E1CEE5000ED6A60 /* CodeType.m in Sources */,
-				7354618D1E1E402600F9F7FC /* CreateBarCodeViewController.m in Sources */,
+				733CF2F81EE570F300AD1DC7 /* DemoScanViewController.m in Sources */,
+				6935764722DC519200EF8A7A /* DemoStyle.m in Sources */,
+				7354618D1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m in Sources */,
 				77576ECE1FEF741F00578A6B /* JDPermissionCamera.m in Sources */,
 				73584FF21E1CE4B900ED6A60 /* UIAlertController+supportedInterfaceOrientations.m in Sources */,
 				8D06C00822446BDC002DE116 /* JDPermissionPhotos.m in Sources */,
@@ -373,9 +361,7 @@
 				77576ECF1FEF741F00578A6B /* JDPermission.m in Sources */,
 				73584FF11E1CE4B900ED6A60 /* UIActionSheet+JDAlertAction.m in Sources */,
 				73584FB21E1CD62300ED6A60 /* main.m in Sources */,
-				730D98331E8F8AAD001BBB6F /* StyleDIY.m in Sources */,
 				73584FF81E1CECC700ED6A60 /* DemoListTableViewController.m in Sources */,
-				739FD57C1E8F540C007D75D3 /* SettingViewController.m in Sources */,
 				73584FF31E1CE4B900ED6A60 /* UIAlertView+JDAlertAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

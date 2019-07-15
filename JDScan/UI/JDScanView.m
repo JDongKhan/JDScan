@@ -15,18 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface JDScanView()
 
 //扫码区域各种参数
-@property (nonatomic, strong,nullable) JDScanViewStyle* viewStyle;
-
-//扫码区域
-@property (nonatomic,assign)CGRect scanRetangleRect;
-
-//线条扫码动画封装
-@property (nonatomic,strong,nullable) JDScanLineAnimation *scanLineAnimation;
-//网格扫码动画封装
-@property (nonatomic,strong,nullable)JDScanNetAnimation *scanNetAnimation;
-
-//线条在中间位置，不移动
-@property (nonatomic,strong,nullable)UIImageView *scanLineStill;
+@property (nonatomic, strong,nullable) JDScanViewStyle *viewStyle;
 
 /**
  @brief  启动相机时 菊花等待
@@ -42,8 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-@implementation JDScanView
-
+@implementation JDScanView {
+    CGRect _scanRect;
+}
 
 - (id)initWithFrame:(CGRect)frame style:(JDScanViewStyle*)style {
     if (self = [super initWithFrame:frame]) {
@@ -54,41 +44,27 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
-
 - (void)drawRect:(CGRect)rect {
     [self drawScanRect];
 }
 
 - (void)startDeviceReadyingWithText:(NSString*)text {
-    int XRetangleLeft = _viewStyle.xScanRetangleOffset;
-    
-    CGSize sizeRetangle = CGSizeMake(self.frame.size.width - XRetangleLeft*2, self.frame.size.width - XRetangleLeft*2);
-    
-    if (!_viewStyle.isNeedShowRetangle) {
-        CGFloat w = sizeRetangle.width;
-        CGFloat h = w / _viewStyle.whRatio;
-        NSInteger hInt = (NSInteger)h;
-        h  = hInt;
-        sizeRetangle = CGSizeMake(w, h);
-    }
-    
+    CGRect scanRect = self.scanRect;
     //扫码区域Y轴最小坐标
-    CGFloat YMinRetangle = self.frame.size.height / 2.0 - sizeRetangle.height/2.0 - _viewStyle.centerUpOffset;
-    
+    CGFloat YMinRetangle = CGRectGetMinY(scanRect);
     //设备启动状态提示
     if (!_activityView) {
         self.activityView = [[UIActivityIndicatorView alloc]init];
-        
         [_activityView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
       
-        self.labelReadying = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, sizeRetangle.width, 30)];
+        self.labelReadying = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, scanRect.size.width, 30)];
         _labelReadying.backgroundColor = [UIColor clearColor];
         _labelReadying.textColor  = [UIColor whiteColor];
         _labelReadying.font = [UIFont systemFontOfSize:18.];
         _labelReadying.text = text;
         [_labelReadying sizeToFit];
         CGRect frame = _labelReadying.frame;
-        CGPoint centerPt = CGPointMake(self.frame.size.width/2 + 20, YMinRetangle + sizeRetangle.height/2);
+        CGPoint centerPt = CGPointMake(self.frame.size.width/2 + 20, YMinRetangle + scanRect.size.height/2);
         _labelReadying.bounds = CGRectMake(0, 0, frame.size.width,30);
         _labelReadying.center = centerPt;
         
@@ -120,119 +96,63 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-
 /**
  *  开始扫描动画
  */
 - (void)startScanAnimation {
-    switch (_viewStyle.anmiationStyle) {
-        case JDScanViewAnimationStyle_LineMove: {
-            //线动画
-            if (!_scanLineAnimation)
-                self.scanLineAnimation = [[JDScanLineAnimation alloc]init];
-            [_scanLineAnimation startAnimatingWithRect:_scanRetangleRect
-                                                InView:self
-                                                 Image:_viewStyle.animationImage];
-        }
-            break;
-        case JDScanViewAnimationStyle_NetGrid: {
-            //网格动画
-            if (!_scanNetAnimation)
-                self.scanNetAnimation = [[JDScanNetAnimation alloc]init];
-            [_scanNetAnimation startAnimatingWithRect:_scanRetangleRect
-                                               InView:self
-                                                Image:_viewStyle.animationImage];
-        }
-            break;
-        case JDScanViewAnimationStyle_LineStill: {
-            if (!_scanLineStill) {
-                
-                CGRect stillRect = CGRectMake(_scanRetangleRect.origin.x+20,
-                                              _scanRetangleRect.origin.y + _scanRetangleRect.size.height/2,
-                                              _scanRetangleRect.size.width-40,
-                                              2);
-                _scanLineStill = [[UIImageView alloc]initWithFrame:stillRect];
-                _scanLineStill.image = _viewStyle.animationImage;
-            }
-            [self addSubview:_scanLineStill];
-        }
-            
-        default:
-            break;
-    }
-
+    [_viewStyle.scanAnimation startAnimatingWithRect:self.scanRect inView:self];
 }
-
-
 
 /**
  *  结束扫描动画
  */
 - (void)stopScanAnimation {
-    if (_scanLineAnimation) {
-        [_scanLineAnimation stopAnimating];
+    [_viewStyle.scanAnimation stopAnimating];
+}
+
+
+- (CGRect)scanRect {
+    int XRetangleLeft = _viewStyle.horizontalMargin;
+    CGSize sizeRetangle = CGSizeMake(self.frame.size.width - XRetangleLeft*2, self.frame.size.width - XRetangleLeft*2);
+    if (_viewStyle.whRatio != 1) {
+        CGFloat w = sizeRetangle.width;
+        CGFloat h = w / _viewStyle.whRatio;
+        NSInteger hInt = (NSInteger)h;
+        h  = hInt;
+        sizeRetangle = CGSizeMake(w, h);
     }
-    
-    if (_scanNetAnimation) {
-        [_scanNetAnimation stopAnimating];
-    }
-    
-    if (_scanLineStill) {
-        [_scanLineStill removeFromSuperview];
-    }
+    //扫码区域Y轴最小坐标
+    CGFloat YMinRetangle = self.frame.size.height / 2.0 - sizeRetangle.height/2.0 - _viewStyle.verticalOffset;
+     _scanRect = CGRectMake(XRetangleLeft, YMinRetangle, sizeRetangle.width, sizeRetangle.height);
+    return _scanRect;
 }
 
 
 - (void)drawScanRect {
-    int XRetangleLeft = _viewStyle.xScanRetangleOffset;
-    
-    CGSize sizeRetangle = CGSizeMake(self.frame.size.width - XRetangleLeft*2, self.frame.size.width - XRetangleLeft*2);
-    
-    //if (!_viewStyle.isScanRetangelSquare)
-    if (_viewStyle.whRatio != 1) {
-        CGFloat w = sizeRetangle.width;
-        CGFloat h = w / _viewStyle.whRatio;
-        
-        NSInteger hInt = (NSInteger)h;
-        h  = hInt;
-        
-        sizeRetangle = CGSizeMake(w, h);
-    }
+    CGRect scanRect = self.scanRect;
+    int XRetangleLeft = scanRect.origin.x;
     
     //扫码区域Y轴最小坐标
-    CGFloat YMinRetangle = self.frame.size.height / 2.0 - sizeRetangle.height/2.0 - _viewStyle.centerUpOffset;
-    CGFloat YMaxRetangle = YMinRetangle + sizeRetangle.height;
+    CGFloat YMinRetangle = scanRect.origin.y;
+    CGFloat YMaxRetangle = CGRectGetMaxY(scanRect);
     CGFloat XRetangleRight = self.frame.size.width - XRetangleLeft;
+    CGSize sizeRetangle = scanRect.size;
     
-    
-    
-    NSLog(@"frame:%@",NSStringFromCGRect(self.frame));
-    
+    NSLog(@"扫码区域:%@",NSStringFromCGRect(scanRect));
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    
     //非扫码区域半透明
     {
         //设置非识别区域颜色
-        
-        const CGFloat *components = CGColorGetComponents(_viewStyle.notRecoginitonArea.CGColor);
-        
-        
+        const CGFloat *components = CGColorGetComponents(_viewStyle.backgroundColor.CGColor);
         CGFloat red_notRecoginitonArea = components[0];
         CGFloat green_notRecoginitonArea = components[1];
         CGFloat blue_notRecoginitonArea = components[2];
         CGFloat alpa_notRecoginitonArea = components[3];
-        
-        
         CGContextSetRGBFillColor(context, red_notRecoginitonArea, green_notRecoginitonArea,
                                  blue_notRecoginitonArea, alpa_notRecoginitonArea);
-        
-        //填充矩形
-        
         //扫码区域上面填充
         CGRect rect = CGRectMake(0, 0, self.frame.size.width, YMinRetangle);
         CGContextFillRect(context, rect);
-        
         
         //扫码区域左边填充
         rect = CGRectMake(0, YMinRetangle, XRetangleLeft,sizeRetangle.height);
@@ -249,30 +169,23 @@ NS_ASSUME_NONNULL_END
         CGContextStrokePath(context);
     }
     
-    if (_viewStyle.isNeedShowRetangle) {
-        //中间画矩形(正方形)
-        CGContextSetStrokeColorWithColor(context, _viewStyle.colorRetangleLine.CGColor);
-        CGContextSetLineWidth(context, 1);
-        
+    //中间画矩形(正方形)
+    if (_viewStyle.borderWidth > 0) {
+        CGContextSetStrokeColorWithColor(context, _viewStyle.borderColor.CGColor);
+        CGContextSetLineWidth(context, _viewStyle.borderWidth);
         CGContextAddRect(context, CGRectMake(XRetangleLeft, YMinRetangle, sizeRetangle.width, sizeRetangle.height));
-        
         //CGContextMoveToPoint(context, XRetangleLeft, YMinRetangle);
         //CGContextAddLineToPoint(context, XRetangleLeft+sizeRetangle.width, YMinRetangle);
-        
         CGContextStrokePath(context);
-       
     }
-     _scanRetangleRect = CGRectMake(XRetangleLeft, YMinRetangle, sizeRetangle.width, sizeRetangle.height);
     
-    
-  //画矩形框4格外围相框角
-    
+    //画矩形框4格外围相框角
     //相框角的宽度和高度
-    int wAngle = _viewStyle.photoframeAngleW;
-    int hAngle = _viewStyle.photoframeAngleH;
+    int wAngle = _viewStyle.cornerWidth;
+    int hAngle = _viewStyle.cornerHeight;
     
     //4个角的 线的宽度
-    CGFloat linewidthAngle = _viewStyle.photoframeLineW;// 经验参数：6和4
+    CGFloat cornerLineWidth = _viewStyle.cornerLineWidth;// 经验参数：6和4
     
     //画扫码矩形以及周边半透明黑色坐标参数
     CGFloat diffAngle = 0.0f;
@@ -280,33 +193,26 @@ NS_ASSUME_NONNULL_END
     //diffAngle = linewidthAngle/2;  //框4个角 在线上加4个角效果
     //diffAngle = 0;//与矩形框重合
     
-    switch (_viewStyle.photoframeAngleStyle) {
-        case JDScanViewPhotoframeAngleStyle_Outer: {
-            diffAngle = linewidthAngle/3;//框外面4个角，与框紧密联系在一起
-        }
+    switch (_viewStyle.cornerStyle) {
+        case JDScanViewCornerStyleOuter: {
+            diffAngle = cornerLineWidth/3;//框外面4个角，与框紧密联系在一起
             break;
-        case JDScanViewPhotoframeAngleStyle_On: {
-            diffAngle = 0;
         }
-            break;
-        case JDScanViewPhotoframeAngleStyle_Inner: {
-            diffAngle = -_viewStyle.photoframeLineW/2;
-            
+        case JDScanViewCornerStyleInner: {
+            diffAngle = -_viewStyle.cornerLineWidth/2;
+             break;
         }
-            break;
-            
         default: {
-            diffAngle = linewidthAngle/3;
+            diffAngle = 0;
         }
             break;
     }
     
-    CGContextSetStrokeColorWithColor(context, _viewStyle.colorAngle.CGColor);
+    CGContextSetStrokeColorWithColor(context, _viewStyle.cornerColor.CGColor);
     CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
     
     // Draw them with a 2.0 stroke width so they are a bit more visible.
-    CGContextSetLineWidth(context, linewidthAngle);
-    
+    CGContextSetLineWidth(context, cornerLineWidth);
     
     //
     CGFloat leftX = XRetangleLeft - diffAngle;
@@ -315,66 +221,53 @@ NS_ASSUME_NONNULL_END
     CGFloat bottomY = YMaxRetangle + diffAngle;
     
     //左上角水平线
-    CGContextMoveToPoint(context, leftX-linewidthAngle/2, topY);
+    CGContextMoveToPoint(context, leftX-cornerLineWidth/2, topY);
     CGContextAddLineToPoint(context, leftX + wAngle, topY);
     
     //左上角垂直线
-    CGContextMoveToPoint(context, leftX, topY-linewidthAngle/2);
+    CGContextMoveToPoint(context, leftX, topY-cornerLineWidth/2);
     CGContextAddLineToPoint(context, leftX, topY+hAngle);
     
     
     //左下角水平线
-    CGContextMoveToPoint(context, leftX-linewidthAngle/2, bottomY);
+    CGContextMoveToPoint(context, leftX-cornerLineWidth/2, bottomY);
     CGContextAddLineToPoint(context, leftX + wAngle, bottomY);
     
     //左下角垂直线
-    CGContextMoveToPoint(context, leftX, bottomY+linewidthAngle/2);
+    CGContextMoveToPoint(context, leftX, bottomY+cornerLineWidth/2);
     CGContextAddLineToPoint(context, leftX, bottomY - hAngle);
     
     
     //右上角水平线
-    CGContextMoveToPoint(context, rightX+linewidthAngle/2, topY);
+    CGContextMoveToPoint(context, rightX+cornerLineWidth/2, topY);
     CGContextAddLineToPoint(context, rightX - wAngle, topY);
     
     //右上角垂直线
-    CGContextMoveToPoint(context, rightX, topY-linewidthAngle/2);
+    CGContextMoveToPoint(context, rightX, topY-cornerLineWidth/2);
     CGContextAddLineToPoint(context, rightX, topY + hAngle);
     
     
     //右下角水平线
-    CGContextMoveToPoint(context, rightX+linewidthAngle/2, bottomY);
+    CGContextMoveToPoint(context, rightX+cornerLineWidth/2, bottomY);
     CGContextAddLineToPoint(context, rightX - wAngle, bottomY);
     
     //右下角垂直线
-    CGContextMoveToPoint(context, rightX, bottomY+linewidthAngle/2);
+    CGContextMoveToPoint(context, rightX, bottomY+cornerLineWidth/2);
     CGContextAddLineToPoint(context, rightX, bottomY - hAngle);
     
     CGContextStrokePath(context);
 }
 
 
-
 //根据矩形区域，获取识别区域
-+ (CGRect)getScanRectWithPreView:(UIView*)view style:(JDScanViewStyle*)style {
-    int XRetangleLeft = style.xScanRetangleOffset;
-    CGSize sizeRetangle = CGSizeMake(view.frame.size.width - XRetangleLeft*2, view.frame.size.width - XRetangleLeft*2);
-    
-    if (style.whRatio != 1) {
-        CGFloat w = sizeRetangle.width;
-        CGFloat h = w / style.whRatio;
-        
-        NSInteger hInt = (NSInteger)h;
-        h  = hInt;
-        
-        sizeRetangle = CGSizeMake(w, h);
-    }
-    
++ (CGRect)getScanRectWithPreView:(UIView*)view scanRect:(CGRect)scanRect {
+    int XRetangleLeft = scanRect.origin.x;
+    CGSize sizeRetangle = scanRect.size;
     //扫码区域Y轴最小坐标
-    CGFloat YMinRetangle = view.frame.size.height / 2.0 - sizeRetangle.height/2.0 - style.centerUpOffset;
+    CGFloat YMinRetangle = scanRect.origin.y;
+    
     //扫码区域坐标
     CGRect cropRect =  CGRectMake(XRetangleLeft, YMinRetangle, sizeRetangle.width, sizeRetangle.height);
-    
-    
     //计算兴趣区域
     CGRect rectOfInterest;
     
@@ -407,22 +300,11 @@ NS_ASSUME_NONNULL_END
 }
 
 //根据矩形区域，获取识别区域
-+ (CGRect)getZXingScanRectWithPreView:(UIView*)view style:(JDScanViewStyle*)style {
-    int XRetangleLeft = style.xScanRetangleOffset;
-    CGSize sizeRetangle = CGSizeMake(view.frame.size.width - XRetangleLeft*2, view.frame.size.width - XRetangleLeft*2);
-    
-    if (style.whRatio != 1) {
-        CGFloat w = sizeRetangle.width;
-        CGFloat h = w / style.whRatio;
-        
-        NSInteger hInt = (NSInteger)h;
-        h  = hInt;
-        
-        sizeRetangle = CGSizeMake(w, h);
-    }
-    
++ (CGRect)getZXingScanRectWithPreView:(UIView*)view scanRect:(CGRect)scanRect {
+    int XRetangleLeft = scanRect.origin.x;
+    CGSize sizeRetangle = scanRect.size;
     //扫码区域Y轴最小坐标
-    CGFloat YMinRetangle = view.frame.size.height / 2.0 - sizeRetangle.height/2.0 - style.centerUpOffset;
+    CGFloat YMinRetangle = scanRect.origin.y;
     
     XRetangleLeft = XRetangleLeft/view.frame.size.width * 1080;
     YMinRetangle = YMinRetangle / view.frame.size.height * 1920;

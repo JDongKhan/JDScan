@@ -11,7 +11,6 @@
 
 @interface UIActionSheet (JDAlertAction)<UIActionSheetDelegate>
 
-
 - (void)showInView:(UIView *)view block:(void(^)(NSInteger idx,NSString* buttonTitle))block;
 
 @end

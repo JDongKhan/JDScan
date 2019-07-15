@@ -12,30 +12,23 @@
 #import "JDPermission.h"
 #import "JDPermissionSetting.h"
 #import "JDAlertAction.h"
-#import "CodeType.h"
-#import "SettingViewController.h"
 
 #import "JDScanViewStyle.h"
-#import "DIYScanViewController.h"
+#import "DemoScanViewController.h"
 #import "ScanResultViewController.h"
-#import "CreateBarCodeViewController.h"
-#import "StyleDIY.h"
+#import "DemoCreateBarCodeViewController.h"
+#import "DemoStyle.h"
 
 @interface DemoListTableViewController ()<UIImagePickerControllerDelegate,UINavigationControllerDelegate>
-@property (nonatomic, strong) NSArray<NSArray*>* arrayItems;
+@property (nonatomic, strong) NSArray<NSDictionary *> *arrayItems;
 @end
 
 @implementation DemoListTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-    
     [self arrayItems];
-    
-    //显示配置按钮
-    [self showSetttingButton];
 }
 
 - (NSArray*)arrayItems {
@@ -43,45 +36,75 @@
         
         //界面DIY list
         NSArray *array1 = @[
-                            @[@"模仿支付宝扫码区域",@"ZhiFuBaoStyle"],
-                            @[@"模仿微信扫码区域",@"weixinStyle"],
-                            @[@"无边框，内嵌4个角",@"InnerStyle"],
-                            @[@"4个角在矩形框线上,网格动画",@"OnStyle"],
-                            @[@"自定义颜色",@"changeColor"],
-                            @[@"只识别框内",@"recoCropRect"],
-                            @[@"改变尺寸",@"changeSize"],
-                            @[@"条形码效果",@"notSquare"]
+                            @{
+                                @"title" : @"默认样式",
+                                @"style" : @"style0"
+                                },
+                            @{
+                                @"title" : @"样式一",
+                                @"style" : @"style1"
+                                },
+                            @{
+                                @"title" : @"样式二",
+                                @"style" : @"style2"
+                                },
+                            @{
+                                @"title" : @"样式三",
+                                @"style" : @"style3"
+                                },
+                            @{
+                                @"title" : @"样式四",
+                                @"style" : @"style4"
+                                },
+                            @{
+                                @"title" : @"样式五",
+                                @"style" : @"style5"
+                                },
+                            @{
+                                @"title" : @"样式六",
+                                @"style" : @"style6"
+                                },
+                            @{
+                                @"title" : @"样式七",
+                                @"style" : @"style7"
+                                },
+                        
+                            @{
+                                @"title" : @"条形码效果",
+                                @"style" : @"notSquare"
+                                }
                             ];
         
         //条码生成
-        NSArray *array2 = @[@[@"二维码/条形码生成",@"createBarCode"]
+        NSArray *array2 = @[
+                            @{
+                                @"title" : @"二维码/条形码生成",
+                                @"style" : @"createBarCode"
+                                }
                             ];
         
         //识别图片
         NSArray *array3 = @[
-                            @[@"相册",@"openLocalPhotoAlbum"]
+                            @{
+                                @"title" : @"相册",
+                                @"style" : @"openLocalPhotoAlbum"
+                                }
                             ];
         
-        _arrayItems = @[array1,array2,array3];
+        _arrayItems = @[@{
+                            @"title" : @"扫码",
+                            @"items" : array1
+                            },
+                        @{
+                            @"title" : @"生成二维码",
+                            @"items" : array2
+                            },
+                        @{
+                            @"title" : @"相册识别",
+                            @"items" : array3
+                            }];
     }
     return _arrayItems;
-}
-
-- (void)showSetttingButton {
-    //选择码扫码类型的按钮
-    //把右侧的两个按钮添加到rightBarButtonItem
-    UIButton *rightBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 40, 30)];
-    [rightBtn setTitle:@"配置" forState:UIControlStateNormal];
-    [rightBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [rightBtn addTarget:self action:@selector(settingViewController) forControlEvents:UIControlEventTouchUpInside];
-    
-    UIBarButtonItem *rightCunstomButtonView = [[UIBarButtonItem alloc] initWithCustomView:rightBtn];
-    self.navigationItem.rightBarButtonItem = rightCunstomButtonView;
-}
-
-- (void)settingViewController {
-    SettingViewController *vc = [[SettingViewController alloc]init];
-    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)showError:(NSString*)str {
@@ -108,8 +131,9 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 //#warning Incomplete implementation, return the number of rows
-    NSArray *item = _arrayItems[section];
-    return item.count;
+    NSDictionary *item = _arrayItems[section];
+    NSArray *items = item[@"items"];
+    return items.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -121,26 +145,16 @@
 }
 
 - (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSString* strTitle = @"title";
-    switch (section) {
-        case 0:
-            strTitle = @"  DIY界面效果";
-            break;
-        case 1:
-            strTitle = @"  条码生成";
-            break;
-        case 2:
-            strTitle = @"  条码图片识别";
-            break;
-        default:
-            break;
-    }
-    return strTitle;
+    NSDictionary *item = _arrayItems[section];
+    return item[@"title"];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    cell.textLabel.text = [_arrayItems[indexPath.section][indexPath.row]firstObject];
+    NSDictionary *item = _arrayItems[indexPath.section];
+    NSArray *items = item[@"items"];
+    NSDictionary *rowItem = items[indexPath.row];
+    cell.textLabel.text = rowItem[@"title"];
     return cell;
 }
 
@@ -159,85 +173,34 @@
 }
 
 - (void)startWithIndexPath:(NSIndexPath *)indexPath {
-    NSArray* array = _arrayItems[indexPath.section][indexPath.row];
-    NSString *methodName = array.lastObject;
-    SEL normalSelector = NSSelectorFromString(methodName);
-    if ([self respondsToSelector:normalSelector]) {
-        ((void (*)(id, SEL))objc_msgSend)(self, normalSelector);
-    }
+    NSDictionary *item = _arrayItems[indexPath.section];
+    NSArray *items = item[@"items"];
+    NSDictionary *rowItem = items[indexPath.row];
+    NSString *style = rowItem[@"style"];
+    [self openScanVCWithStyle:style];
 }
 
 #pragma mark ---自定义界面
 
-- (void)openScanVCWithStyle:(JDScanViewStyle*)style {
-    DIYScanViewController *vc = [DIYScanViewController new];
+- (void)openScanVCWithStyle:(NSString *)styleName {
+    SEL sel = NSSelectorFromString(styleName);
+    if ([self respondsToSelector:sel]) {
+        [self performSelector:sel];
+        return;
+    }
+    JDScanViewStyle *style = [DemoStyle performSelector:sel];
+    DemoScanViewController *vc = [[DemoScanViewController alloc] init];
     vc.style = style;
-    vc.isOpenInterestRect = YES;
-    vc.scanCodeType = [CodeType sharedManager].scanCodeType;
+    vc.onlyScanCenterRect = YES;
     [self.navigationController pushViewController:vc animated:YES];
-}
-
-
-#pragma mark --模仿支付宝
-- (void)ZhiFuBaoStyle {
-    [self openScanVCWithStyle:[StyleDIY ZhiFuBaoStyle]];
-}
-
-#pragma mark -无边框，内嵌4个角
-- (void)InnerStyle {
-    [self openScanVCWithStyle:[StyleDIY InnerStyle]];
-}
-
-#pragma mark -无边框，内嵌4个角
-- (void)weixinStyle {
-    [self openScanVCWithStyle:[StyleDIY weixinStyle]];
-}
-
-#pragma mark -框内区域识别
-- (void)recoCropRect {
-    DIYScanViewController *vc = [DIYScanViewController new];
-    vc.scanCodeType = [CodeType sharedManager].scanCodeType;
-
-    vc.style = [StyleDIY recoCropRect];
-    //开启只识别框内
-    vc.isOpenInterestRect = YES;
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
-#pragma mark -4个角在矩形框线上,网格动画
-- (void)OnStyle {
-    [self openScanVCWithStyle:[StyleDIY OnStyle]];
-}
-
-#pragma mark -自定义4个角及矩形框颜色
-- (void)changeColor {
-    DIYScanViewController *vc = [DIYScanViewController new];
-    vc.scanCodeType = [CodeType sharedManager].scanCodeType;
-
-    vc.style = [StyleDIY changeColor];
-    
-    //开启只识别矩形框内图像功能
-    vc.isOpenInterestRect = YES;
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
-#pragma mark -改变扫码区域位置
-- (void)changeSize {
-    [self openScanVCWithStyle:[StyleDIY changeSize]];
-}
-
-#pragma mark -非正方形，可以用在扫码条形码界面
-- (void)notSquare {
-    [self openScanVCWithStyle:[StyleDIY notSquare]];
 }
 
 #pragma mark --生成条码
 
 - (void)createBarCode {
-    CreateBarCodeViewController *vc = [[CreateBarCodeViewController alloc]init];
+    DemoCreateBarCodeViewController *vc = [[DemoCreateBarCodeViewController alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }
-
 
 #pragma mark - 相册
 - (void)openLocalPhotoAlbum {
@@ -257,14 +220,10 @@
  */
 - (void)openLocalPhoto {
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    
     picker.delegate = self;
-    
     //部分机型可能导致崩溃
     picker.allowsEditing = YES;
-    
     [self presentViewController:picker animated:YES completion:nil];
 }
 
@@ -277,16 +236,9 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDZXingWrapper recognizeImage:image block:^(ZXBarcodeFormat barcodeFormat, NSString *str) {
-        
-        JDScanResult *result = [[JDScanResult alloc]init];
-        result.strScanned = str;
-        result.imgScanned = image;
-        result.strBarCodeType = [StyleDIY convertZXBarcodeFormat:barcodeFormat];
-        
+    [JDZXingWrapper recognizeImage:image block:^(JDScanResult *result) {
         [weakSelf scanResultWithArray:@[result]];
     }];
-    
 }
 
 - (void)scanResultWithArray:(NSArray<JDScanResult*>*)array {
@@ -297,10 +249,10 @@
     
     //经测试，可以同时识别2个二维码，不能同时识别二维码和条形码
     for (JDScanResult *result in array) {
-        NSLog(@"scanResult:%@",result.strScanned);
+        NSLog(@"scanResult:%@",result.text);
     }
     
-    if (!array[0].strScanned || [array[0].strScanned isEqualToString:@""] ) {
+    if (!array[0].text || [array[0].text isEqualToString:@""] ) {
          [self showError:@"识别失败了"];
         return;
     }
@@ -312,12 +264,9 @@
 
 - (void)showNextVCWithScanResult:(JDScanResult*)strResult {
     ScanResultViewController *vc = [ScanResultViewController new];
-    vc.imgScan = strResult.imgScanned;
-    
-    vc.strScan = strResult.strScanned;
-    
-    vc.strCodeType = strResult.strBarCodeType;
-    
+    vc.imgScan = strResult.image;
+    vc.strScan = strResult.text;
+    vc.strCodeType = strResult.type;
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -1,0 +1,1 @@
+../../../../../JDScan/ZXing/JDScanResult.h

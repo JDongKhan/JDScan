@@ -1,5 +1,5 @@
 //
-//  DIYScanViewController.h
+//  DemoScanViewController.h
 //  JDScanDemo
 //
 //  Created by JD on 2019 /5/7.
@@ -9,6 +9,6 @@
 
 #import <JDScanViewController.h>
 
-@interface DIYScanViewController : JDScanViewController
+@interface DemoScanViewController : JDScanViewController
 
 @end

@@ -8,28 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-
-/**
- 扫码区域动画效果
- */
-typedef NS_ENUM(NSInteger,JDScanViewAnimationStyle)
-{
-    JDScanViewAnimationStyle_LineMove,   //线条上下移动
-    JDScanViewAnimationStyle_NetGrid,//网格
-    JDScanViewAnimationStyle_LineStill,//线条停止在扫码区域中央
-    JDScanViewAnimationStyle_None    //无动画
-    
-};
+#import "JDScanAnimation.h"
 
 /**
  扫码区域4个角位置类型
  */
-typedef NS_ENUM(NSInteger, JDScanViewPhotoframeAngleStyle)
-{
-    JDScanViewPhotoframeAngleStyle_Inner,//内嵌，一般不显示矩形框情况下
-    JDScanViewPhotoframeAngleStyle_Outer,//外嵌,包围在矩形框的4个角
-    JDScanViewPhotoframeAngleStyle_On   //在矩形框的4个角上，覆盖
+typedef NS_ENUM(NSInteger, JDScanViewCornerStyle) {
+    JDScanViewCornerStyleDefault,  //在矩形框的4个角上，覆盖
+    JDScanViewCornerStyleInner,//内嵌，一般不显示矩形框情况下
+    JDScanViewCornerStyleOuter,//外嵌,包围在矩形框的4个角
 };
 
 
@@ -40,66 +27,69 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -中心位置矩形框
 /**
- @brief  是否需要绘制扫码矩形框，默认YES
+ 支持自动缩放
  */
-@property (nonatomic, assign) BOOL isNeedShowRetangle;
+@property (nonatomic, assign) BOOL supportAutoZoom;
 
+/**
+ 支持自动对焦
+ */
+@property (nonatomic, assign) BOOL supportAutoFocus;
 
 /**
  *  默认扫码区域为正方形，如果扫码区域不是正方形，设置宽高比
  */
 @property (nonatomic, assign) CGFloat whRatio;
 
-
 /**
  @brief  矩形框(视频显示透明区)域向上移动偏移量，0表示扫码透明区域在当前视图中心位置，< 0 表示扫码区域下移, >0 表示扫码区域上移
  */
-@property (nonatomic, assign) CGFloat centerUpOffset;
+@property (nonatomic, assign) CGFloat verticalOffset;
 
 /**
- *  矩形框(视频显示透明区)域离界面左边及右边距离，默认60
+ *  矩形框(视频显示透明区)离界面左边及右边距离，默认60
  */
-@property (nonatomic, assign) CGFloat xScanRetangleOffset;
+@property (nonatomic, assign) CGFloat horizontalMargin;
+
+/**
+ @brief  是否需要绘制扫码矩形框，默认YES
+ */
+@property (nonatomic, assign) CGFloat borderWidth;
 
 /**
  @brief  矩形框线条颜色
  */
-@property (nonatomic, strong) UIColor *colorRetangleLine;
+@property (nonatomic, strong) UIColor *borderColor;
 
 #pragma mark -矩形框(扫码区域)周围4个角
 /**
  @brief  扫码区域的4个角类型
  */
-@property (nonatomic, assign) JDScanViewPhotoframeAngleStyle photoframeAngleStyle;
+@property (nonatomic, assign) JDScanViewCornerStyle cornerStyle;
 
 //4个角的颜色
-@property (nonatomic, strong) UIColor* colorAngle;
+@property (nonatomic, strong) UIColor *cornerColor;
 
 //扫码区域4个角的宽度和高度
-@property (nonatomic, assign) CGFloat photoframeAngleW;
-@property (nonatomic, assign) CGFloat photoframeAngleH;
+@property (nonatomic, assign) CGFloat cornerWidth;
+@property (nonatomic, assign) CGFloat cornerHeight;
 /**
- @brief  扫码区域4个角的线条宽度,默认6，建议8到4之间
+ @brief  扫码区域4个角的线条宽度,默认2
  */
-@property (nonatomic, assign) CGFloat photoframeLineW;
+@property (nonatomic, assign) CGFloat cornerLineWidth;
 
-#pragma mark --动画效果
-/**
- @brief  扫码动画效果:线条或网格
- */
-@property (nonatomic, assign) JDScanViewAnimationStyle anmiationStyle;
-
-/**
- *  动画效果的图像，如线条或网格的图像，如果为nil，表示不需要动画效果
- */
-@property (nonatomic,strong,nullable) UIImage *animationImage;
-
-#pragma mark -非识别区域颜色,默认 RGBA (0,0,0,0.5)
 
 /**
  must be create by [UIColor colorWithRed: green: blue: alpha:]
+ 背景颜色，非扫描区，默认 RGBA (0,0,0,0.5)
  */
-@property (nonatomic, strong) UIColor *notRecoginitonArea;
+@property (nonatomic, strong) UIColor *backgroundColor;
+
+/**
+ 扫描器
+ */
+@property (nonatomic ,strong) id<JDScanAnimation> scanAnimation;
+
 
 @end
 
