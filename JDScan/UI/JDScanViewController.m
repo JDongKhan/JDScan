@@ -120,9 +120,25 @@
             weakSelf.imageView.image = preImage;
         };
         [_zxing zoomForView:self.view];
+        
+        //计算扫描区域
         if (_onlyScanCenterRect) {
-            [_zxing setZxingRect:[JDScanView getZXingScanRectWithPreView:self.videoView scanRect:self.qRScanView.scanRect]];
-            [_zxing setNativeRect:[JDScanView getScanRectWithPreView:self.view scanRect:self.qRScanView.scanRect]];
+            CGRect scanRect = self.qRScanView.scanRect;
+            
+            //将屏幕宽设置为扫描区域
+            if (self.fullWidthScan) {
+                CGFloat width = self.view.frame.size.width;
+                if (self.view.frame.size.height < width) {
+                    width = self.view.frame.size.height;
+                }
+                CGFloat frameX = scanRect.origin.x - (width - scanRect.size.width)/2.0f;
+                CGFloat frameY = scanRect.origin.y - (width - scanRect.size.height)/2.0f;
+                CGRect fixRect = CGRectMake(frameX, frameY, width, width);
+                scanRect = fixRect;
+            }
+            
+            [_zxing setZxingRect:[JDScanView getZXingScanRectWithPreView:self.videoView scanRect:scanRect]];
+            [_zxing setNativeRect:[JDScanView getScanRectWithPreView:self.view scanRect:scanRect]];
         }
     }
     //开始扫描

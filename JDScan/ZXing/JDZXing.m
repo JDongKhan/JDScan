@@ -81,6 +81,8 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 - (void)stop {
     self.bNeedScanResult = NO;
     [self.capture stop];
+    //关闭缩放
+    [self stopZoom];
 }
 
 - (void)openTorch:(BOOL)on_off {

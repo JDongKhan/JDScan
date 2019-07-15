@@ -64,6 +64,8 @@
  */
 @property (nonatomic, assign) BOOL hiddenLightButton;
 
+@property (nonatomic, assign) BOOL fullWidthScan;
+
 /**
  打开灯光按钮
  */

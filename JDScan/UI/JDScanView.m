@@ -261,13 +261,8 @@ NS_ASSUME_NONNULL_END
 
 //根据矩形区域，获取识别区域
 + (CGRect)getScanRectWithPreView:(UIView*)view scanRect:(CGRect)scanRect {
-    int XRetangleLeft = scanRect.origin.x;
-    CGSize sizeRetangle = scanRect.size;
-    //扫码区域Y轴最小坐标
-    CGFloat YMinRetangle = scanRect.origin.y;
-    
     //扫码区域坐标
-    CGRect cropRect =  CGRectMake(XRetangleLeft, YMinRetangle, sizeRetangle.width, sizeRetangle.height);
+    CGRect cropRect =  scanRect;
     //计算兴趣区域
     CGRect rectOfInterest;
     

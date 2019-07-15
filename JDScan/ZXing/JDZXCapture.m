@@ -233,7 +233,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (self.hardStop) {
         return;
     }
-    //[self stillImageOutput];
+    [self stillImageOutput];
     [self videoDataOutput];
     [self metadataOutput];
     if (!self.session.running) {
@@ -531,7 +531,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         }
         device.subjectAreaChangeMonitoringEnabled = YES;
     }
-    device.activeVideoMinFrameDuration = CMTimeMake(10, (int)(30 * 10));
+    device.activeVideoMinFrameDuration = CMTimeMake(20, (int)(30 * 10));
     device.activeVideoMaxFrameDuration = device.activeVideoMinFrameDuration;
    
     [device unlockForConfiguration];
@@ -645,7 +645,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
-+ (NSString*)strBarCodeType:(ZXBarcodeFormat)barCodeFormat {
++ (NSString *)strBarCodeType:(ZXBarcodeFormat)barCodeFormat {
     NSString *strAVMetadataObjectType = nil;
     switch (barCodeFormat) {
         case kBarcodeFormatQRCode:
