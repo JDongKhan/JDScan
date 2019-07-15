@@ -15,7 +15,7 @@
 - (id)init {
     if (self =  [super init]) {
         _borderWidth = 1.0f;
-        _supportAutoZoom = YES;
+        _supportAutoZoom = NO;
         _supportAutoFocus = YES;
         _whRatio = 1.0;
         _borderColor = [UIColor whiteColor];

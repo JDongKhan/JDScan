@@ -249,7 +249,7 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDZXing recognizeImage:image block:^(JDScanResult *result) {
+    [JDScanner recognizeImage:image block:^(JDScanResult *result) {
         [weakSelf scanResultWithArray:@[result]];
     }];
 }

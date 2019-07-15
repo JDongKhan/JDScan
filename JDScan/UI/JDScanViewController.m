@@ -113,13 +113,12 @@
 - (void)startScan {
     if (!_zxing) {
         __weak __typeof(self) weakSelf = self;
-        _zxing = [[JDZXing alloc] initWithPreView:self.videoView block:^(JDScanResult *result) {
+        _zxing = [[JDScanner alloc] initWithPreView:self.videoView block:^(JDScanResult *result) {
             [weakSelf scanResultWithArray:@[result]];
         }];
         self.zxing.preImageBlock = ^(UIImage *preImage) {
             weakSelf.imageView.image = preImage;
         };
-        [_zxing zoomForView:self.view];
         
         //计算扫描区域
         if (_onlyScanCenterRect) {
@@ -210,7 +209,7 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDZXing recognizeImage:image block:^(JDScanResult *result) {
+    [JDScanner recognizeImage:image block:^(JDScanResult *result) {
         [weakSelf scanResultWithArray:@[result]];
     }];
 

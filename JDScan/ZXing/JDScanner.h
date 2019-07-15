@@ -1,5 +1,5 @@
 //
-//  JDZXing.h
+//  JDScanner.h
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
@@ -14,7 +14,7 @@
 /*!
  *  ZXing扫码封装
  */
-@interface JDZXing : NSObject
+@interface JDScanner : NSObject
 
 //扫描区域
 @property (nonatomic, assign) CGRect zxingRect;

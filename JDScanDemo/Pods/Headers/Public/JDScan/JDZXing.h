@@ -1,1 +1,0 @@
-../../../../../JDScan/ZXing/JDZXing.h

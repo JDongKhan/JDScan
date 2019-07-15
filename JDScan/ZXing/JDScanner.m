@@ -1,18 +1,18 @@
 //
-//  JDZXing.m
+//  JDScanner.m
 //
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
 //
 
-#import "JDZXing.h"
+#import "JDScanner.h"
 #import "JDZXCaptureDelegate.h"
 #import "JDZXCapture.h"
 
 typedef void(^JDScanBlock)(JDScanResult *result);
 
-@interface JDZXing() <JDZXCaptureDelegate>
+@interface JDScanner() <JDZXCaptureDelegate>
 
 @property (nonatomic, strong) JDZXCapture *capture;
 
@@ -30,7 +30,7 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 @end
 
-@implementation JDZXing
+@implementation JDScanner
 
 - (id)init {
     if ( self = [super init]) {
