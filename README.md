@@ -5,7 +5,7 @@
 
 iOS端扫描二维码无非是苹果提供的AVCaptureMetadataOutput系列、Zxing、Zbar。而Zbar早已不在维护，我们不打算再使用（Android现在还在使用Zbar）。
    
-所以本方案是基于AVCaptureMetadataOutput + Zxing共同实现的，当然这两种技术网上例子一大堆，但是都是一些单独使用的Demo，能像本项目这样能直接拿去用的就没有了。 
+所以本方案是基于AVCaptureMetadataOutput + Zxing共同实现的，当然这两种技术网上例子一大堆，但是都是一些单独使用的Demo，并没有整合的方案，能像本项目这样能直接拿去用的就没有了。 
 
 ## 为何这样做
 为何用到Zxing，事实上Zxing确实扫描能力不如AVCaptureMetadataOutput，目前苹果的扫码器能满足大部分场景，但是不是所有的二维码都是完美的。
@@ -35,7 +35,7 @@ iOS端扫描二维码无非是苹果提供的AVCaptureMetadataOutput系列、Zxi
 
 
 
-OpenCV目前也只是做了 降噪 + 图片二值化的工作。
+这里的OpenCV目前也只是做了 降噪 + 图片二值化的工作，但是实际的工作中只要不是太过苛刻也足以满足需求了。
 
 
 因OpenCV相关的知识缺乏目前只能做到这里。
@@ -66,7 +66,7 @@ pod 'JDScan'
 
 ```
 
-注：部分代码/资源来源于https://github.com/MxABC/LBXScan,。
+注：部分代码/资源来源于https://github.com/MxABC/LBXScan.git。
 
 如果你是一名Android开发，https://github.com/LiuhangZhang/qrcode_android 这里是Android的解决方案，本方案一开始使用的整体二值化不是太理想，后面借鉴此项目中分块二值化效果还不错，毕竟本人OpenCV知识也是有限。
 
