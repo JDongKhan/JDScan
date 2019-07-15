@@ -59,7 +59,7 @@ OpenCV目前也只是做了 降噪 + 图片二值化的工作。
 
 8、识别各种类型码
 
-Cocoapods 使用 
+## Cocoapods 使用 
 
 ``` 
 pod 'JDScan'
