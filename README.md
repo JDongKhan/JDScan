@@ -66,6 +66,8 @@ pod 'JDScan'
 
 ```
 
+注：部分代码/资源来源于网络。
+
 如果你是一名Android开发，https://github.com/LiuhangZhang/qrcode_android 这里是Android的解决方案，本方案一开始使用的整体二值化不是太理想，后面借鉴此项目中分块二值化效果还不错，毕竟本人OpenCV知识也是有限。
 
 本方案也不是万能的，当然足够满足大部分企业需求，如果需要做成微信那样，可能就需要使用OCR技术了。
