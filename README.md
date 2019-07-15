@@ -17,6 +17,13 @@ iOS端扫描二维码无非是苹果提供的AVCaptureMetadataOutput系列、Zxi
   2、扫描受到光照的影响。
   
   3、斜扫二维码
+  
+这些异常场景普遍二维码扫码器是搞不定的，而我又搞不定二维码扫码器，那么我们能做的就是在识别图片之前将图片处理一下再交给扫码器。
+
+由于苹果的API太过于封闭，我不知道怎么单独调用苹果的扫描，所以这里就使用到了Zxing来做接盘侠。 
+
+当然苹果的二维码识别器我们也没浪费，AVCaptureSession可以支持多个AVCaptureOutput，AVCaptureMetadataOutput就是苹果提供的二维码扫码器，我们在使用AVCaptureMetadataOutput的同时也将使用AVCaptureVideoDataOutput，AVCaptureVideoDataOutput可以将每一帧回调出来，我们此时就处理掉图片再配合Zxing识别。这样两种扫码器就能同时工作了。
+
  
 ## OpenCV
 
@@ -24,7 +31,6 @@ iOS端扫描二维码无非是苹果提供的AVCaptureMetadataOutput系列、Zxi
 
 这里OpenCV就做了 降噪 + 图片二值化的工作。 
 
-由于苹果的API太过于封闭，我不知道怎么单独调用苹果的扫描，所以这里就使用到了Zxing来做接盘侠。 当然苹果的二维码识别器我们也没浪费。
 
 Cocoapods 使用 
 
