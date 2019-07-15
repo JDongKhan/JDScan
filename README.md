@@ -3,7 +3,7 @@
 ## 这是一款二维码扫描的解决方案。
 
    iOS端扫描二维码无非是苹果提供的AVCaptureMetadataOutput系列、Zxing、Zbar。而Zbar早已不在维护，我们不打算再使用（Android现在还在使用Zbar）。
-所以本方案是基于AVCaptureMetadataOutput + Zxing共同实现的，当然这两个网上例子一大堆。  
+所以本方案是基于AVCaptureMetadataOutput + Zxing共同实现的，当然这两个网上例子一大堆，可是像本项目这样好用的就没有了。 
 
 ## 为何这样做
 为何用到Zxing，事实上Zxing确实扫描能力不如AVCaptureMetadataOutput，目前苹果的扫码器能满足大部分场景，但是不是所有的二维码都是完美的。
