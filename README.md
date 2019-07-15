@@ -1,5 +1,6 @@
 # AVCaptureMetadataOutput + （OpenCV + Zxing）
 
+
 ## 这是一款二维码扫描的解决方案。
 
 iOS端扫描二维码无非是苹果提供的AVCaptureMetadataOutput系列、Zxing、Zbar。而Zbar早已不在维护，我们不打算再使用（Android现在还在使用Zbar）。
