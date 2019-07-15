@@ -34,13 +34,13 @@
 #pragma mark -框内区域识别
 + (JDScanViewStyle*)style6;
 
-#pragma mark -改变扫码区域位置
+#pragma mark - 改变扫码区域位置
 + (JDScanViewStyle*)style7;
 
-#pragma mark -非正方形，可以用在扫码条形码界面
+#pragma mark - 条形码，可以用在扫码条形码界面
 + (JDScanViewStyle*)notSquare;
 
-#pragma mark -ZXing码格式类型转native
+#pragma mark ---- ZXing码格式类型转native
 + (NSString*)convertZXBarcodeFormat:(ZXBarcodeFormat)barCodeFormat;
 
 @end

@@ -8,15 +8,15 @@
 
 #import "DemoCreateBarCodeViewController.h"
 #import "JDAlertAction.h"
-#import "JDZXingWrapper.h"
+#import "JDZXing.h"
 #import "UIImageView+CornerRadius.h"
 
 @interface DemoCreateBarCodeViewController ()
 
 //二维码
 @property (nonatomic, strong) UIView *qrView;
-@property (nonatomic, strong) UIImageView* qrImgView;
-@property (nonatomic, strong) UIImageView* logoImgView;
+@property (nonatomic, strong) UIImageView *qrImgView;
+@property (nonatomic, strong) UIImageView *logoImgView;
 
 //条形码
 @property (nonatomic, strong) UIView *tView;
@@ -118,7 +118,7 @@
 - (void)createQR_logo {
     _qrView.hidden = NO;
     _tView.hidden = YES;
-    _qrImgView.image = [JDZXingWrapper createCodeWithString:@"JDia20091227@foxmail.com" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatQRCode];
+    _qrImgView.image = [JDZXing createCodeWithString:@"419591321@qq.com" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatQRCode];
     CGSize logoSize=CGSizeMake(30, 30);
     self.logoImgView = [self roundCornerWithImage:[UIImage imageNamed:@"logo"] size:logoSize];
     _logoImgView.bounds = CGRectMake(0, 0, logoSize.width, logoSize.height);
@@ -152,13 +152,13 @@
 - (void)createCodeEAN13 {
     _qrView.hidden = YES;
     _tView.hidden = NO;
-    _tImgView.image = [JDZXingWrapper createCodeWithString:@"6944551723107" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatEan13];
+    _tImgView.image = [JDZXing createCodeWithString:@"419591321" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatEan13];
 }
 
 - (void)createCode128 {
     _qrView.hidden = YES;
     _tView.hidden = NO;
-    _tImgView.image = [JDZXingWrapper createCodeWithString:@"283657461695996598" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatCode128];
+    _tImgView.image = [JDZXing createCodeWithString:@"419591321" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatCode128];
 }
 
 - (void)showError:(NSString*)str {

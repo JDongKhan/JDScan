@@ -13,20 +13,15 @@
 
 #pragma mark-  disPlayAppPrivacySetting
 
-+ (void)displayAppPrivacySettings
-{
-    if (@available(iOS 8,*))
-    {
-        if (UIApplicationOpenSettingsURLString != NULL)
-        {
++ (void)displayAppPrivacySettings {
+    if (@available(iOS 8,*)) {
+        if (UIApplicationOpenSettingsURLString != NULL) {
             NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
             
             if (@available(iOS 10,*)) {
                 [[UIApplication sharedApplication]openURL:appSettings options:@{} completionHandler:^(BOOL success) {
                 }];
-            }
-            else
-            {
+            } else {
                 [[UIApplication sharedApplication]openURL:appSettings];
             }
         }
@@ -44,8 +39,7 @@
 + (void)showAlertToDislayPrivacySettingWithTitle:(NSString*)title
                                              msg:(NSString*)message
                                           cancel:(NSString*)cancel
-                                         setting:(NSString*)setting
-{
+                                         setting:(NSString*)setting {
     [self showAlertToDislayPrivacySettingWithTitle:title msg:message cancel:cancel setting:setting completion:nil];
 }
 
@@ -62,8 +56,7 @@
                                              msg:(NSString*)message
                                           cancel:(NSString*)cancel
                                          setting:(NSString*)setting
-                                      completion:(void(^)(void))completion
-{
+                                      completion:(void(^)(void))completion {
     if (@available(iOS 8,*)) {
         
         UIAlertController* alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -91,20 +84,17 @@
     }
 }
 
-+ (UIViewController*)currentTopViewController
-{
++ (UIViewController*)currentTopViewController {
     UIViewController *currentViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
     while ([currentViewController presentedViewController])    currentViewController = [currentViewController presentedViewController];
     
     if ([currentViewController isKindOfClass:[UITabBarController class]]
-        && ((UITabBarController*)currentViewController).selectedViewController != nil )
-    {
+        && ((UITabBarController*)currentViewController).selectedViewController != nil ) {
         currentViewController = ((UITabBarController*)currentViewController).selectedViewController;
     }
     
     while ([currentViewController isKindOfClass:[UINavigationController class]]
-           && [(UINavigationController*)currentViewController topViewController])
-    {
+           && [(UINavigationController*)currentViewController topViewController]) {
         currentViewController = [(UINavigationController*)currentViewController topViewController];
     }
     

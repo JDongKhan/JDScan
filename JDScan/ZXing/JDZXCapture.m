@@ -62,7 +62,9 @@
         _running = NO;
         _sessionPreset = AVCaptureSessionPresetHigh;
         _transform = CGAffineTransformIdentity;
-        _scanRect = CGRectZero;
+    
+        _zxingRect = CGRectZero;
+        _nativeRect = CGRectZero;
     }
   return self;
 }
@@ -103,15 +105,12 @@
     }
 
     self.onScreen = YES;
-    [self startStop];
   } else if ([key isEqualToString:kCAOnOrderOut]) {
     if (self.orderOutSkip) {
       self.orderOutSkip--;
       return;
     }
-
     self.onScreen = NO;
-    [self startStop];
   }
 }
 
@@ -136,9 +135,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     CGImageRef rotatedImage = [self createRotatedImage:videoFrameImage degrees:self.rotation];
     CGImageRelease(videoFrameImage);
     
-    // If scanRect is set, crop the current image to include only the desired rect
-    if (!CGRectIsEmpty(self.scanRect)) {
-      CGImageRef croppedImage = CGImageCreateWithImageInRect(rotatedImage, self.scanRect);
+    // If zxingRect is set, crop the current image to include only the desired rect
+    if (!CGRectIsEmpty(self.zxingRect)) {
+      CGImageRef croppedImage = CGImageCreateWithImageInRect(rotatedImage, self.zxingRect);
       CFRelease(rotatedImage);
       rotatedImage = croppedImage;
     }
@@ -237,7 +236,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     //[self stillImageOutput];
     [self videoDataOutput];
     [self metadataOutput];
-    
     if (!self.session.running) {
         static int i = 0;
         if (++i == -2) {
@@ -342,10 +340,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)setDelegate:(id<JDZXCaptureDelegate>)delegate {
     _delegate = delegate;
-      if (delegate) {
-        self.hardStop = NO;
-      }
-      [self startStop];
 }
 
 - (void)setFocusMode:(AVCaptureFocusMode)focusMode {
@@ -382,6 +376,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     _transform = transform;
     [self.layer setAffineTransform:transform];
 }
+
 
 #pragma mark - Back, Front, Torch
 
@@ -491,6 +486,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.session addOutput:_metadataOutput];
         }
         _metadataOutput.metadataObjectTypes = [_metadataOutput availableMetadataObjectTypes];
+        //设置扫描区域
+        _metadataOutput.rectOfInterest = self.nativeRect;
     }
     return _metadataOutput;
 }

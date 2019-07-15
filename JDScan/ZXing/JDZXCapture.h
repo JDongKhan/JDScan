@@ -38,8 +38,12 @@
 @property (nonatomic, assign) BOOL mirror;
 @property (nonatomic, assign) CGFloat rotation;
 @property (nonatomic, assign, readonly) BOOL running;
+
+
 //扫描区域
-@property (nonatomic, assign) CGRect scanRect;
+@property (nonatomic, assign) CGRect zxingRect;
+@property (nonatomic, assign) CGRect nativeRect;
+
 @property (nonatomic, copy) NSString *sessionPreset;
 //是否开启灯光
 @property (nonatomic, assign) BOOL torch;

@@ -195,14 +195,27 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-#pragma mark --生成条码
+
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma mark --------- 生成条码 ----------
 
 - (void)createBarCode {
     DemoCreateBarCodeViewController *vc = [[DemoCreateBarCodeViewController alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-#pragma mark - 相册
+#pragma mark --------- 相册 -----------
 - (void)openLocalPhotoAlbum {
     __weak __typeof(self) weakSelf = self;
     [JDPermission authorizeWithType:JDPermissionType_Photos completion:^(BOOL granted, BOOL firstTime) {
@@ -236,7 +249,7 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDZXingWrapper recognizeImage:image block:^(JDScanResult *result) {
+    [JDZXing recognizeImage:image block:^(JDScanResult *result) {
         [weakSelf scanResultWithArray:@[result]];
     }];
 }

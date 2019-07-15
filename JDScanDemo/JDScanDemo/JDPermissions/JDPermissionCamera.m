@@ -10,10 +10,8 @@
 
 @implementation JDPermissionCamera
 
-+ (BOOL)authorized
-{
-    if ([AVCaptureDevice respondsToSelector:@selector(authorizationStatusForMediaType:)])
-    {
++ (BOOL)authorized {
+    if ([AVCaptureDevice respondsToSelector:@selector(authorizationStatusForMediaType:)]) {
         AVAuthorizationStatus permission =
         [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         
@@ -25,10 +23,8 @@
     }
 }
 
-+ (AVAuthorizationStatus)authorizationStatus
-{
-    if ([AVCaptureDevice respondsToSelector:@selector(authorizationStatusForMediaType:)])
-    {
++ (AVAuthorizationStatus)authorizationStatus {
+    if ([AVCaptureDevice respondsToSelector:@selector(authorizationStatusForMediaType:)]) {
         return [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     } else {
         // Prior to iOS 7 all apps were authorized.
@@ -36,8 +32,7 @@
     }
 }
 
-+ (void)authorizeWithCompletion:(void(^)(BOOL granted,BOOL firstTime))completion
-{
++ (void)authorizeWithCompletion:(void(^)(BOOL granted,BOOL firstTime))completion {
     if ([AVCaptureDevice respondsToSelector:@selector(authorizationStatusForMediaType:)]) {
         AVAuthorizationStatus permission =
         [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -50,8 +45,7 @@
             case AVAuthorizationStatusRestricted:
                 completion(NO,NO);
                 break;
-            case AVAuthorizationStatusNotDetermined:
-            {
+            case AVAuthorizationStatusNotDetermined: {
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
                                          completionHandler:^(BOOL granted) {
                                              if (completion) {

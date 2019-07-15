@@ -1,5 +1,5 @@
 //
-//  JDZXingWrapper.h
+//  JDZXing.h
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
@@ -14,12 +14,17 @@
 /*!
  *  ZXing扫码封装
  */
-@interface JDZXingWrapper : NSObject
+@interface JDZXing : NSObject
+
+//扫描区域
+@property (nonatomic, assign) CGRect zxingRect;
+@property (nonatomic, assign) CGRect nativeRect;
+
 
 //显示预览的图片
 @property (nonatomic,copy) void(^preImageBlock)(UIImage *preImage);
 
-/**
+/*!
  初始化ZXing
 
  @param preView 视频预览视图
@@ -31,13 +36,6 @@
 
 //添加手势缩放功能
 - (void)zoomForView:(UIView *)view;
-
-/**
- 设置识别区域，不设置默认全屏识别
-
- @param scanRect 识别区域
- */
-- (void)setScanRect:(CGRect)scanRect;
 
 /*!
  *  开始扫码
@@ -61,12 +59,12 @@
  */
 - (void)openOrCloseTorch;
 
-/**
+/*!
  自动对焦
  */
 - (void)autoFocus;
 
-/**
+/*!
  自动缩放
  */
 - (void)autoZoom;

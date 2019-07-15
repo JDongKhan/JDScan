@@ -41,7 +41,7 @@ const char kBorderColor;
 - (instancetype)initWithRoundingRectImageView {
     self = [super init];
     if (self) {
-        [self zy_cornerRadiusRoundingRect];
+        [self cornerRadiusRoundingRect];
     }
     return self;
 }
@@ -52,7 +52,7 @@ const char kBorderColor;
 - (instancetype)initWithCornerRadiusAdvance:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType {
     self = [super init];
     if (self) {
-        [self zy_cornerRadiusAdvance:cornerRadius rectCornerType:rectCornerType];
+        [self cornerRadiusAdvance:cornerRadius rectCornerType:rectCornerType];
     }
     return self;
 }
@@ -60,7 +60,7 @@ const char kBorderColor;
 /**
  * @brief attach border for UIImageView with width & color
  */
-- (void)zy_attachBorderWidth:(CGFloat)width color:(UIColor *)color {
+- (void)attachBorderWidth:(CGFloat)width color:(UIColor *)color {
     self.borderWidth = width;
     self.borderColor = color;
 }
@@ -69,7 +69,7 @@ const char kBorderColor;
 /**
  * @brief clip the cornerRadius with image, UIImageView must be setFrame before, no off-screen-rendered
  */
-- (void)zy_cornerRadiusWithImage:(UIImage *)image cornerRadius:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType {
+- (void)cornerRadiusWithImage:(UIImage *)image cornerRadius:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType {
     CGSize size = self.bounds.size;
     CGFloat scale = [UIScreen mainScreen].scale;
     CGSize cornerRadii = CGSizeMake(cornerRadius, cornerRadius);
@@ -91,7 +91,7 @@ const char kBorderColor;
 /**
  * @brief clip the cornerRadius with image, draw the backgroundColor you want, UIImageView must be setFrame before, no off-screen-rendered, no Color Blended layers
  */
-- (void)zy_cornerRadiusWithImage:(UIImage *)image cornerRadius:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType backgroundColor:(UIColor *)backgroundColor {
+- (void)cornerRadiusWithImage:(UIImage *)image cornerRadius:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType backgroundColor:(UIColor *)backgroundColor {
     CGSize size = self.bounds.size;
     CGFloat scale = [UIScreen mainScreen].scale;
     CGSize cornerRadii = CGSizeMake(cornerRadius, cornerRadius);
@@ -116,7 +116,7 @@ const char kBorderColor;
 /**
  * @brief set cornerRadius for UIImageView, no off-screen-rendered
  */
-- (void)zy_cornerRadiusAdvance:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType {
+- (void)cornerRadiusAdvance:(CGFloat)cornerRadius rectCornerType:(UIRectCorner)rectCornerType {
     self.radius = cornerRadius;
     self.roundingCorners = rectCornerType;
     self.isRounding = NO;
@@ -130,7 +130,7 @@ const char kBorderColor;
 /**
  * @brief become Rounding UIImageView, no off-screen-rendered
  */
-- (void)zy_cornerRadiusRoundingRect {
+- (void)cornerRadiusRoundingRect {
     self.isRounding = YES;
     
     if (!self.hadAddObserver) {
@@ -173,9 +173,9 @@ const char kBorderColor;
 - (void)zy_LayoutSubviews {
     [super layoutSubviews];
     if (self.isRounding) {
-        [self zy_cornerRadiusWithImage:self.image cornerRadius:self.frame.size.width/2 rectCornerType:UIRectCornerAllCorners];
+        [self cornerRadiusWithImage:self.image cornerRadius:self.frame.size.width/2 rectCornerType:UIRectCornerAllCorners];
     } else if (0 != self.radius && 0 != self.roundingCorners && nil != self.image) {
-        [self zy_cornerRadiusWithImage:self.image cornerRadius:self.radius rectCornerType:self.roundingCorners];
+        [self cornerRadiusWithImage:self.image cornerRadius:self.radius rectCornerType:self.roundingCorners];
     }
 }
 
@@ -190,9 +190,9 @@ const char kBorderColor;
         }
         [self validateFrame];
         if (self.isRounding) {
-            [self zy_cornerRadiusWithImage:newImage cornerRadius:self.frame.size.width/2 rectCornerType:UIRectCornerAllCorners];
+            [self cornerRadiusWithImage:newImage cornerRadius:self.frame.size.width/2 rectCornerType:UIRectCornerAllCorners];
         } else if (0 != self.radius && 0 != self.roundingCorners && nil != self.image) {
-            [self zy_cornerRadiusWithImage:newImage cornerRadius:self.radius rectCornerType:self.roundingCorners];
+            [self cornerRadiusWithImage:newImage cornerRadius:self.radius rectCornerType:self.roundingCorners];
         }
     }
 }

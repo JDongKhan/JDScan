@@ -33,7 +33,7 @@
     }
     _scanImg.image = _imgScan;
     _labelScanText.text = _strScan;
-    _labelScanCodeType.text = [NSString stringWithFormat:@"码的类型:%@",_strCodeType];
+    _labelScanCodeType.text = [NSString stringWithFormat:@"类型:%@",_strCodeType];
 }
 
 

@@ -1,1 +1,0 @@
-../../../../../JDScan/ZXing/JDZXingWrapper.h

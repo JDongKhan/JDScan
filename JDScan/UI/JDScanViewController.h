@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "JDScanResult.h"
 #import "JDScanView.h"
-#import "JDZXingWrapper.h" //ZXing扫码封装
+#import "JDZXing.h" //ZXing扫码封装
 
 /**
  扫码结果delegate,也可通过继承本控制器，override方法scanResultWithArray即可
@@ -51,7 +51,7 @@
 /**
  ZXing扫码对象
  */
-@property (nonatomic, strong, readonly) JDZXingWrapper *zxingObj;
+@property (nonatomic, strong, readonly) JDZXing *zxing;
 
 #pragma mark ---- 扫码界面效果及提示等 ------
 /**

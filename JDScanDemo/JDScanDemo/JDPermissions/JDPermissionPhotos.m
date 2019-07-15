@@ -13,8 +13,7 @@
 
 @implementation JDPermissionPhotos
 
-+ (BOOL)authorized
-{
++ (BOOL)authorized {
     return [self authorizationStatus] == 3;
 }
 
@@ -28,42 +27,34 @@
  2 :Denied
  3 :Authorized
  */
-+ (NSInteger)authorizationStatus
-{
-    if (@available(iOS 8,*))
-    {
++ (NSInteger)authorizationStatus {
+    if (@available(iOS 8,*)) {
         return  [PHPhotoLibrary authorizationStatus];
-    }
-    else
-    {
+    } else {
         return  [ALAssetsLibrary authorizationStatus];
     }
 }
 
-+ (void)authorizeWithCompletion:(void(^)(BOOL granted,BOOL firstTime))completion
-{
++ (void)authorizeWithCompletion:(void(^)(BOOL granted,BOOL firstTime))completion {
     if (@available(iOS 8.0, *)) {
         
         PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
         
         switch (status) {
-            case PHAuthorizationStatusAuthorized:
-            {
+            case PHAuthorizationStatusAuthorized: {
                 if (completion) {
                     completion(YES,NO);
                 }
             }
                 break;
             case PHAuthorizationStatusRestricted:
-            case PHAuthorizationStatusDenied:
-            {
+            case PHAuthorizationStatusDenied: {
                 if (completion) {
                     completion(NO,NO);
                 }
             }
                 break;
-            case PHAuthorizationStatusNotDetermined:
-            {
+            case PHAuthorizationStatusNotDetermined: {
                 [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
                     if (completion) {
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -73,8 +64,7 @@
                 }];
             }
                 break;
-            default:
-            {
+            default: {
                 if (completion) {
                     completion(NO,NO);
                 }
@@ -82,19 +72,17 @@
                 break;
         }
         
-    }else{
+    } else {
         
         ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
         switch (status) {
-            case ALAuthorizationStatusAuthorized:
-            {
+            case ALAuthorizationStatusAuthorized: {
                 if (completion) {
                     completion(YES, NO);
                 }
             }
                 break;
-            case ALAuthorizationStatusNotDetermined:
-            {
+            case ALAuthorizationStatusNotDetermined: {
                 ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
                 
                 [library enumerateGroupsWithTypes:ALAssetsGroupAll
@@ -119,13 +107,12 @@
                                      }];
             } break;
             case ALAuthorizationStatusRestricted:
-            case ALAuthorizationStatusDenied:
-            {
+            case ALAuthorizationStatusDenied: {
                 if (completion) {
                     completion(NO, NO);
                 }
             }
-                break;
+            break;
         }
     }
   

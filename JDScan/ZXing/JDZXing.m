@@ -1,18 +1,18 @@
 //
-//  JDZXingWrapper.m
+//  JDZXing.m
 //
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
 //
 
-#import "JDZXingWrapper.h"
+#import "JDZXing.h"
 #import "JDZXCaptureDelegate.h"
 #import "JDZXCapture.h"
 
 typedef void(^JDScanBlock)(JDScanResult *result);
 
-@interface JDZXingWrapper() <JDZXCaptureDelegate>
+@interface JDZXing() <JDZXCaptureDelegate>
 
 @property (nonatomic, strong) JDZXCapture *capture;
 
@@ -26,9 +26,11 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 @property (nonatomic, strong) NSTimer *zoomTimer;
 
+@property (nonatomic, weak) UIView *preView;
+
 @end
 
-@implementation JDZXingWrapper 
+@implementation JDZXing
 
 - (id)init {
     if ( self = [super init]) {
@@ -44,7 +46,7 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 - (id)initWithPreView:(UIView*)preView block:(void(^)(JDScanResult *result))block {
     if (self = [super init]) {
-        
+        _preView = preView;
         self.capture = [[JDZXCapture alloc] init];
         self.capture.camera = self.capture.back;
         self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
@@ -56,19 +58,19 @@ typedef void(^JDScanBlock)(JDScanResult *result);
         
         CGRect rect = preView.frame;
         rect.origin = CGPointZero;
-        
         self.capture.layer.frame = rect;
-        //[preView.layer addSublayer:self.capture.layer];
-        
         [preView.layer insertSublayer:self.capture.layer atIndex:0];
-        
     }
     return self;
 }
 
+- (void)setZxingRect:(CGRect)zxingRect {
+    //设置只识别框内区域
+    self.capture.zxingRect = zxingRect;
+}
 
-- (void)setScanRect:(CGRect)scanRect {
-    self.capture.scanRect = scanRect;
+- (void)setNativeRect:(CGRect)nativeRect {
+    self.capture.nativeRect = nativeRect;
 }
 
 - (void)start {
@@ -208,6 +210,5 @@ typedef void(^JDScanBlock)(JDScanResult *result);
     [_focusTimer invalidate];
     _focusTimer = nil;
 }
-
 
 @end

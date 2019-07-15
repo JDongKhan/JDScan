@@ -111,29 +111,28 @@
 
 //启动设备
 - (void)startScan {
-    if (!_zxingObj) {
+    if (!_zxing) {
         __weak __typeof(self) weakSelf = self;
-        _zxingObj = [[JDZXingWrapper alloc]initWithPreView:self.videoView block:^(JDScanResult *result) {
+        _zxing = [[JDZXing alloc] initWithPreView:self.videoView block:^(JDScanResult *result) {
             [weakSelf scanResultWithArray:@[result]];
         }];
-        self.zxingObj.preImageBlock = ^(UIImage *preImage) {
+        self.zxing.preImageBlock = ^(UIImage *preImage) {
             weakSelf.imageView.image = preImage;
         };
-        [_zxingObj zoomForView:self.view];
+        [_zxing zoomForView:self.view];
         if (_onlyScanCenterRect) {
-            //设置只识别框内区域
-            CGRect cropRect = [JDScanView getZXingScanRectWithPreView:self.videoView scanRect:self.qRScanView.scanRect];
-            [_zxingObj setScanRect:cropRect];
+            [_zxing setZxingRect:[JDScanView getZXingScanRectWithPreView:self.videoView scanRect:self.qRScanView.scanRect]];
+            [_zxing setNativeRect:[JDScanView getScanRectWithPreView:self.view scanRect:self.qRScanView.scanRect]];
         }
     }
     //开始扫描
     [self start];
     
     if (_style.supportAutoZoom) {
-        [_zxingObj autoZoom];
+        [_zxing autoZoom];
     }
     if (_style.supportAutoFocus) {
-        [_zxingObj autoFocus];
+        [_zxing autoFocus];
     }
     self.view.backgroundColor = [UIColor clearColor];
 }
@@ -145,13 +144,13 @@
 }
 
 - (void)start {
-    [_zxingObj start];
+    [_zxing start];
     [_qRScanView stopDeviceReadying];
     [_qRScanView startScanAnimation];
 }
 
 - (void)stop {
-    [_zxingObj stop];
+    [_zxing stop];
     [_qRScanView stopScanAnimation];
     //停止扫描后将灯光按钮还原
     _lightButton.selected = NO;
@@ -170,7 +169,7 @@
 //开关闪光灯
 - (void)openOrClose:(UIButton *)btn {
     btn.selected = !btn.selected;
-    [_zxingObj openOrCloseTorch];
+    [_zxing openOrCloseTorch];
 }
 
 #pragma mark ------  打开相册并识别图片
@@ -195,7 +194,7 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDZXingWrapper recognizeImage:image block:^(JDScanResult *result) {
+    [JDZXing recognizeImage:image block:^(JDScanResult *result) {
         [weakSelf scanResultWithArray:@[result]];
     }];
 

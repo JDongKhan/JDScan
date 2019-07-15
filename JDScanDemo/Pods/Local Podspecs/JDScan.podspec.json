@@ -15,7 +15,7 @@
   "platforms": {
     "ios": "8.0"
   },
-  "default_subspecs": "All",
+  "default_subspecs": "UI",
   "subspecs": [
     {
       "name": "ZXing",
@@ -35,15 +35,9 @@
     {
       "name": "UI",
       "source_files": "JDScan/UI/*.{h,m}",
-      "resources": "JDScan/UI/CodeScan.bundle"
-    },
-    {
-      "name": "All",
+      "resources": "JDScan/UI/CodeScan.bundle",
       "dependencies": {
         "JDScan/ZXing": [
-
-        ],
-        "JDScan/UI": [
 
         ]
       }
