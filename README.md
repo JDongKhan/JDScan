@@ -66,7 +66,7 @@ pod 'JDScan'
 
 ```
 
-注：部分代码/资源来源于https://github.com/MxABC/LBXScan.git。
+注：部分代码/资源来源于https://github.com/MxABC/LBXScan
 
 如果你是一名Android开发，https://github.com/LiuhangZhang/qrcode_android 这里是Android的解决方案，本方案一开始使用的整体二值化不是太理想，后面借鉴此项目中分块二值化效果还不错，毕竟本人OpenCV知识也是有限。
 
