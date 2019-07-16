@@ -5,13 +5,13 @@ Pod::Spec.new do |spec|
     spec.homepage     = 'https://github.com/wangjindong'
     spec.license      = 'MIT'
     spec.authors      = {'WJD' => '419591321@qq.com'}
-#    spec.platform     = :ios, '7.0'
+    spec.platform     = :ios, '8.0'
     spec.source       = {:git => 'https://github.com/wangjindong/JDScan.git', :tag => spec.version}
     spec.requires_arc = true
 #    spec.prefix_header_contents = '#import <Foundation/Foundation.h>'
     spec.ios.deployment_target = '8.0'
 
-    spec.defauwww lt_subspec = 'UI'
+    spec.default_subspec = 'UI'
 
     spec.subspec 'ZXing' do |zxing|
       zxing.source_files = 'JDScan/ZXing/**/*.{h,m,mm}'
