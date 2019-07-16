@@ -50,7 +50,7 @@ const int ZX_AZTEC_WORD_SIZE[] = {
   BOOL compact;
   int layers;
   int totalBitsInLayer;
-  int wordSize;
+  int wordSize = ZX_AZTEC_WORD_SIZE[0];
   ZXBitArray *stuffedBits;
   if (userSpecifiedLayers != ZX_AZTEC_DEFAULT_LAYERS) {
     compact = userSpecifiedLayers < 0;
@@ -116,6 +116,7 @@ const int ZX_AZTEC_WORD_SIZE[] = {
   // allocate symbol
   int baseMatrixSize = compact ? 11 + layers * 4 : 14 + layers * 4; // not including alignment lines
   int alignmentMap[baseMatrixSize];
+  memset(alignmentMap, 0, baseMatrixSize * sizeof(int));
   int matrixSize;
   if (compact) {
     // no alignment marks in compact mode, alignmentMap is a no-op

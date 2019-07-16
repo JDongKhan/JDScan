@@ -16,24 +16,16 @@
 
 #import "ZXBitArray.h"
 #import "ZXBitMatrix.h"
+#import "ZXBoolArray.h"
 #import "ZXIntArray.h"
 
 @interface ZXBitMatrix ()
 
-@property (nonatomic, assign, readonly) int rowSize;
 @property (nonatomic, assign, readonly) int bitsSize;
 
 @end
 
 @implementation ZXBitMatrix
-
-+ (ZXBitMatrix *)bitMatrixWithDimension:(int)dimension {
-  return [[self alloc] initWithDimension:dimension];
-}
-
-+ (ZXBitMatrix *)bitMatrixWithWidth:(int)width height:(int)height {
-  return [[self alloc] initWithWidth:width height:height];
-}
 
 - (id)initWithDimension:(int)dimension {
   return [self initWithWidth:dimension height:dimension];
@@ -48,7 +40,7 @@
     }
     _width = width;
     _height = height;
-    _rowSize = (_width + 31) >> 5;
+    _rowSize = (_width + 31) / 32;
     _bitsSize = _rowSize * _height;
     _bits = (int32_t *)malloc(_bitsSize * sizeof(int32_t));
     [self clear];
@@ -77,24 +69,112 @@
   }
 }
 
++ (ZXBitMatrix *)parse:(NSString *)stringRepresentation
+             setString:(NSString *)setString
+           unsetString:(NSString *)unsetString {
+  if (!stringRepresentation) {
+    @throw [NSException exceptionWithName:@"IllegalArgumentException"
+                                   reason:@"stringRepresentation is required"
+                                 userInfo:nil];
+  }
+
+  ZXBoolArray *bits = [[ZXBoolArray alloc] initWithLength:(unsigned int)stringRepresentation.length];
+  int bitsPos = 0;
+  int rowStartPos = 0;
+  int rowLength = -1;
+  int nRows = 0;
+  int pos = 0;
+  while (pos < stringRepresentation.length) {
+    if ([stringRepresentation characterAtIndex:pos] == '\n' ||
+        [stringRepresentation characterAtIndex:pos] == '\r') {
+      if (bitsPos > rowStartPos) {
+        if(rowLength == -1) {
+          rowLength = bitsPos - rowStartPos;
+        } else if (bitsPos - rowStartPos != rowLength) {
+          @throw [NSException exceptionWithName:@"IllegalArgumentException"
+                                         reason:@"row lengths do not match"
+                                       userInfo:nil];
+        }
+        rowStartPos = bitsPos;
+        nRows++;
+      }
+      pos++;
+    } else if ([[stringRepresentation substringWithRange:NSMakeRange(pos, setString.length)] isEqualToString:setString]) {
+      pos += setString.length;
+      bits.array[bitsPos] = YES;
+      bitsPos++;
+    } else if ([[stringRepresentation substringWithRange:NSMakeRange(pos, unsetString.length)] isEqualToString:unsetString]) {
+      pos += unsetString.length;
+      bits.array[bitsPos] = NO;
+      bitsPos++;
+    } else {
+      @throw [NSException exceptionWithName:@"IllegalArgumentException"
+                                     reason:[NSString stringWithFormat:@"illegal character encountered: %@", [stringRepresentation substringFromIndex:pos]]
+                                   userInfo:nil];
+    }
+  }
+
+  // no EOL at end?
+  if (bitsPos > rowStartPos) {
+    if (rowLength == -1) {
+      rowLength = bitsPos - rowStartPos;
+    } else if (bitsPos - rowStartPos != rowLength) {
+      @throw [NSException exceptionWithName:@"IllegalArgumentException"
+                                     reason:@"row lengths do not match"
+                                   userInfo:nil];
+    }
+    nRows++;
+  }
+
+  ZXBitMatrix *matrix = [[ZXBitMatrix alloc] initWithWidth:rowLength height:nRows];
+  for (int i = 0; i < bitsPos; i++) {
+    if (bits.array[i]) {
+      [matrix setX:i % rowLength y:i / rowLength];
+    }
+  }
+  return matrix;
+}
+
 - (BOOL)getX:(int)x y:(int)y {
-  NSInteger offset = y * self.rowSize + (x >> 5);
-  return ((self.bits[offset] >> (x & 0x1f)) & 1) != 0;
+  NSInteger offset = y * self.rowSize + (x / 32);
+  return ((_bits[offset] >> (x & 0x1f)) & 1) != 0;
 }
 
 - (void)setX:(int)x y:(int)y {
-  NSInteger offset = y * self.rowSize + (x >> 5);
-  self.bits[offset] |= 1 << (x & 0x1f);
+  NSInteger offset = y * self.rowSize + (x / 32);
+  _bits[offset] |= 1 << (x & 0x1f);
+}
+
+- (void)unsetX:(int)x y:(int)y {
+  int offset = y * self.rowSize + (x / 32);
+  _bits[offset] &= ~(1 << (x & 0x1f));
 }
 
 - (void)flipX:(int)x y:(int)y {
-  NSUInteger offset = y * self.rowSize + (x >> 5);
-  self.bits[offset] ^= 1 << (x & 0x1f);
+  NSUInteger offset = y * self.rowSize + (x / 32);
+  _bits[offset] ^= 1 << (x & 0x1f);
+}
+
+- (void)xor:(ZXBitMatrix *)mask {
+  if (self.width != mask.width || self.height != mask.height
+      || self.rowSize != mask.rowSize) {
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:@"input matrix dimensions do not match"
+                                 userInfo:nil];
+  }
+  ZXBitArray *rowArray = [[ZXBitArray alloc] initWithSize:self.width];
+  for (int y = 0; y < self.height; y++) {
+    int offset = y * self.rowSize;
+    int32_t *row = [mask rowAtY:y row:rowArray].bits;
+    for (int x = 0; x < self.rowSize; x++) {
+      self.bits[offset + x] ^= row[x];
+    }
+  }
 }
 
 - (void)clear {
   NSInteger max = self.bitsSize;
-  memset(self.bits, 0, max * sizeof(int32_t));
+  memset(_bits, 0, max * sizeof(int32_t));
 }
 
 - (void)setRegionAtLeft:(int)left top:(int)top width:(int)aWidth height:(int)aHeight {
@@ -113,7 +193,7 @@
   for (NSUInteger y = top; y < bottom; y++) {
     NSUInteger offset = y * self.rowSize;
     for (NSInteger x = left; x < right; x++) {
-      self.bits[offset + (x >> 5)] |= 1 << (x & 0x1f);
+      _bits[offset + (x / 32)] |= 1 << (x & 0x1f);
     }
   }
 }
@@ -126,7 +206,7 @@
   }
   int offset = y * self.rowSize;
   for (int x = 0; x < self.rowSize; x++) {
-    [row setBulk:x << 5 newBits:self.bits[offset + x]];
+    [row setBulk:x * 32 newBits:_bits[offset + x]];
   }
 
   return row;
@@ -134,7 +214,7 @@
 
 - (void)setRowAtY:(int)y row:(ZXBitArray *)row {
   for (NSUInteger i = 0; i < self.rowSize; i++) {
-    self.bits[(y * self.rowSize) + i] = row.bits[i];
+    _bits[(y * self.rowSize) + i] = row.bits[i];
   }
 }
 
@@ -161,7 +241,7 @@
 
   for (int y = 0; y < self.height; y++) {
     for (int x32 = 0; x32 < self.rowSize; x32++) {
-      int32_t theBits = self.bits[y * self.rowSize + x32];
+      int32_t theBits = _bits[y * self.rowSize + x32];
       if (theBits != 0) {
         if (y < top) {
           top = y;
@@ -191,8 +271,8 @@
     }
   }
 
-  NSInteger width = right - left;
-  NSInteger height = bottom - top;
+  NSInteger width = right - left + 1;
+  NSInteger height = bottom - top + 1;
 
   if (width < 0 || height < 0) {
     return nil;
@@ -203,16 +283,16 @@
 
 - (ZXIntArray *)topLeftOnBit {
   int bitsOffset = 0;
-  while (bitsOffset < self.bitsSize && self.bits[bitsOffset] == 0) {
+  while (bitsOffset < self.bitsSize && _bits[bitsOffset] == 0) {
     bitsOffset++;
   }
   if (bitsOffset == self.bitsSize) {
     return nil;
   }
   int y = bitsOffset / self.rowSize;
-  int x = (bitsOffset % self.rowSize) << 5;
+  int x = (bitsOffset % self.rowSize) * 32;
 
-  int32_t theBits = self.bits[bitsOffset];
+  int32_t theBits = _bits[bitsOffset];
   int32_t bit = 0;
   while ((theBits << (31 - bit)) == 0) {
     bit++;
@@ -223,7 +303,7 @@
 
 - (ZXIntArray *)bottomRightOnBit {
   int bitsOffset = self.bitsSize - 1;
-  while (bitsOffset >= 0 && self.bits[bitsOffset] == 0) {
+  while (bitsOffset >= 0 && _bits[bitsOffset] == 0) {
     bitsOffset--;
   }
   if (bitsOffset < 0) {
@@ -231,9 +311,9 @@
   }
 
   int y = bitsOffset / self.rowSize;
-  int x = (bitsOffset % self.rowSize) << 5;
+  int x = (bitsOffset % self.rowSize) * 32;
 
-  int32_t theBits = self.bits[bitsOffset];
+  int32_t theBits = _bits[bitsOffset];
   int32_t bit = 31;
   while ((theBits >> bit) == 0) {
     bit--;
@@ -249,7 +329,7 @@
   }
   ZXBitMatrix *other = (ZXBitMatrix *)o;
   for (int i = 0; i < self.bitsSize; i++) {
-    if (self.bits[i] != other.bits[i]) {
+    if (_bits[i] != other.bits[i]) {
       return NO;
     }
   }
@@ -262,18 +342,31 @@
   hash = 31 * hash + self.height;
   hash = 31 * hash + self.rowSize;
   for (NSUInteger i = 0; i < self.bitsSize; i++) {
-    hash = 31 * hash + self.bits[i];
+    hash = 31 * hash + _bits[i];
   }
   return hash;
 }
 
+// string representation using "X" for set and " " for unset bits
 - (NSString *)description {
+  return [self descriptionWithSetString:@"X " unsetString:@"  "];
+}
+
+- (NSString *)descriptionWithSetString:(NSString *)setString unsetString:(NSString *)unsetString {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  return [self descriptionWithSetString:setString unsetString:unsetString lineSeparator:@"\n"];
+#pragma GCC diagnostic pop
+}
+
+- (NSString *)descriptionWithSetString:(NSString *)setString unsetString:(NSString *)unsetString
+                         lineSeparator:(NSString *)lineSeparator {
   NSMutableString *result = [NSMutableString stringWithCapacity:self.height * (self.width + 1)];
   for (int y = 0; y < self.height; y++) {
     for (int x = 0; x < self.width; x++) {
-      [result appendString:[self getX:x y:y] ? @"X " : @"  "];
+      [result appendString:[self getX:x y:y] ? setString : unsetString];
     }
-    [result appendString:@"\n"];
+    [result appendString:lineSeparator];
   }
   return result;
 }

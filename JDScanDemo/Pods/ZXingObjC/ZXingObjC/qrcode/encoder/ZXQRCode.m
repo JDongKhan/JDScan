@@ -36,8 +36,7 @@ const int ZX_NUM_MASK_PATTERNS = 8;
 }
 
 - (NSString *)description {
-  //NSMutableString *result = [NSMutableString stringWithCapacity:200];
-  NSMutableString *result = [[NSMutableString alloc] init];
+  NSMutableString *result = [NSMutableString stringWithCapacity:200];
   [result appendFormat:@"<<\n mode: %@", self.mode];
   [result appendFormat:@"\n ecLevel: %@", self.ecLevel];
   [result appendFormat:@"\n version: %@", self.version];

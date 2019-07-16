@@ -1,19 +1,19 @@
 PODS:
-  - JDScan (1.0):
-    - JDScan/UI (= 1.0)
-  - JDScan/UI (1.0):
+  - JDScan (1.2):
+    - JDScan/UI (= 1.2)
+  - JDScan/UI (1.2):
     - JDScan/ZXing
-  - JDScan/ZXing (1.0):
-    - ZXingObjC (= 3.1.1)
-  - ZXingObjC (3.1.1):
-    - ZXingObjC/All (= 3.1.1)
-  - ZXingObjC/All (3.1.1)
+  - JDScan/ZXing (1.2):
+    - ZXingObjC (~> 3.6.5)
+  - ZXingObjC (3.6.5):
+    - ZXingObjC/All (= 3.6.5)
+  - ZXingObjC/All (3.6.5)
 
 DEPENDENCIES:
   - JDScan (from `../`)
 
 SPEC REPOS:
-  http://opensource.cnsuning.com/thirdparty/thirdpartyspecs.git:
+  https://github.com/cocoapods/specs.git:
     - ZXingObjC
 
 EXTERNAL SOURCES:
@@ -21,9 +21,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  JDScan: 082ea11c2b3b286f3aaea647ec23d9bfa859f923
-  ZXingObjC: c291fcc548db6b211759f307936c4dbab9ae1e79
+  JDScan: 77bcd39312d1c3f66d5b6c299e985812869a543c
+  ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
-PODFILE CHECKSUM: a568a75a2123c8e631fa63700e8f006b92727760
+PODFILE CHECKSUM: fb85bd43a08732d99dee056add050b5cb7315acc
 
 COCOAPODS: 1.7.3

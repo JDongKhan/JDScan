@@ -24,13 +24,13 @@
  * See ISO 16022:2006, Annex C Table C.1
  * The C40 Basic Character Set (*'s used for placeholders for the shift values)
  */
-const unichar C40_BASIC_SET_CHARS[40] = {
+static const unichar C40_BASIC_SET_CHARS[40] = {
   '*', '*', '*', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
   'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 };
 
-const unichar C40_SHIFT2_SET_CHARS[40] = {
+static const unichar C40_SHIFT2_SET_CHARS[40] = {
   '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*',  '+', ',', '-', '.',
   '/', ':', ';', '<', '=', '>', '?',  '@', '[', '\\', ']', '^', '_'
 };
@@ -39,13 +39,16 @@ const unichar C40_SHIFT2_SET_CHARS[40] = {
  * See ISO 16022:2006, Annex C Table C.2
  * The Text Basic Character Set (*'s used for placeholders for the shift values)
  */
-const unichar TEXT_BASIC_SET_CHARS[40] = {
+static const unichar TEXT_BASIC_SET_CHARS[40] = {
   '*', '*', '*', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
   'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 };
 
-const unichar TEXT_SHIFT3_SET_CHARS[32] = {
+// Shift 2 for Text is the same encoding as C40
+static unichar TEXT_SHIFT2_SET_CHARS[40];
+
+static const unichar TEXT_SHIFT3_SET_CHARS[32] = {
   '`', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
   'O',  'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '{', '|', '}', '~', (unichar) 127
 };
@@ -61,6 +64,12 @@ enum {
 };
 
 @implementation ZXDataMatrixDecodedBitStreamParser
+
++ (void)initialize {
+  if ([self class] != [ZXDataMatrixDecodedBitStreamParser class]) return;
+
+  memcpy(TEXT_SHIFT2_SET_CHARS, C40_SHIFT2_SET_CHARS, sizeof(C40_SHIFT2_SET_CHARS));
+}
 
 + (ZXDecoderResult *)decode:(ZXByteArray *)bytes error:(NSError **)error {
   ZXBitSource *bits = [[ZXBitSource alloc] initWithBytes:bytes];
@@ -140,7 +149,7 @@ enum {
       return PAD_ENCODE;
     } else if (oneByte <= 229) {  // 2-digit data 00-99 (Numeric Value + 130)
       int value = oneByte - 130;
-      if (value < 10) { // padd with '0' for single digit values
+      if (value < 10) { // pad with '0' for single digit values
         [result appendString:@"0"];
       }
       [result appendFormat:@"%d", value];
@@ -322,13 +331,13 @@ enum {
         break;
       case 2:
           // Shift 2 for Text is the same encoding as C40
-        if (cValue < sizeof(C40_SHIFT2_SET_CHARS) / sizeof(char)) {
-          unichar c40char = C40_SHIFT2_SET_CHARS[cValue];
+        if (cValue < sizeof(TEXT_SHIFT2_SET_CHARS) / sizeof(unichar)) {
+          unichar textChar = TEXT_SHIFT2_SET_CHARS[cValue];
           if (upperShift) {
-            [result appendFormat:@"%C", (unichar)(c40char + 128)];
+            [result appendFormat:@"%C", (unichar)(textChar + 128)];
             upperShift = NO;
           } else {
-            [result appendFormat:@"%C", c40char];
+            [result appendFormat:@"%C", textChar];
           }
         } else if (cValue == 27) {
           [result appendFormat:@"%C", (unichar)29]; // translate as ASCII 29

@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
 #    spec.prefix_header_contents = '#import <Foundation/Foundation.h>'
     spec.ios.deployment_target = '8.0'
 
-    spec.default_subspec = 'UI'
+    spec.defauwww lt_subspec = 'UI'
 
     spec.subspec 'ZXing' do |zxing|
       zxing.source_files = 'JDScan/ZXing/**/*.{h,m,mm}'
@@ -19,7 +19,7 @@ Pod::Spec.new do |spec|
 #      zxing.prefix_header_contents = '#import "JDZXingWrapper.h"'
       zxing.vendored_frameworks  = 'JDScan/Frameworks/*.framework'
       zxing.libraries = 'c++','c','c++abi'
-      zxing.dependency 'ZXingObjC', '3.1.1'
+      zxing.dependency 'ZXingObjC', '~> 3.6.5'
     end
   
     spec.subspec 'UI' do |ui|

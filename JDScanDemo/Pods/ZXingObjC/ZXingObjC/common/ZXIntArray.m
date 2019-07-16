@@ -40,7 +40,7 @@
   }
   va_end(args);
 
-  if (self = [self initWithLength:length]) {
+  if ((self = [self initWithLength:length]) && (length > 0)) {
     va_list args;
     va_start(args, int1);
     int i = 0;
@@ -51,6 +51,25 @@
   }
 
   return self;
+}
+
+- (BOOL)isEqual:(id)o {
+    if (![o isKindOfClass:[self class]]) {
+        return NO;
+    }
+    ZXIntArray *other = (ZXIntArray *) o;
+    if (other == self) {
+        return YES;
+    }
+    if (other.length != self.length) {
+        return NO;
+    }
+    for (int i = 0; i < self.length; i++) {
+        if (other.array[i] != self.array[i]) {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 - (id)copyWithZone:(NSZone *)zone {

@@ -1,6 +1,6 @@
 {
   "name": "JDScan",
-  "version": "1.0",
+  "version": "1.2",
   "summary": "ios opencv zxing scan wrapper",
   "homepage": "https://github.com/wangjindong",
   "license": "MIT",
@@ -9,7 +9,7 @@
   },
   "source": {
     "git": "https://github.com/wangjindong/JDScan.git",
-    "tag": "1.0"
+    "tag": "1.2"
   },
   "requires_arc": true,
   "platforms": {
@@ -28,7 +28,7 @@
       ],
       "dependencies": {
         "ZXingObjC": [
-          "3.1.1"
+          "~> 3.6.5"
         ]
       }
     },
