@@ -7,9 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <ZXingObjC/ZXBarcodeFormat.h>
 #import "JDScanResult.h"
-
-#import "ZXBarcodeFormat.h"
 
 /*!
  *  ZXing扫码封装

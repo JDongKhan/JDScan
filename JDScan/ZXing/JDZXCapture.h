@@ -15,9 +15,9 @@
  */
 
 #import <AVFoundation/AVFoundation.h>
+#import <ZXingObjC/ZXBarcodeFormat.h>
 #import "JDScanResult.h"
 #import "JDZXCaptureDelegate.h"
-#import <ZXingObjC/ZXBarcodeFormat.h>
 
 @protocol JDZXCaptureDelegate, ZXReader;
 @class ZXDecodeHints;

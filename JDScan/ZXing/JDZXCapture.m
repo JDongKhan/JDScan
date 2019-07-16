@@ -15,8 +15,8 @@
  */
 
 #import "JDZXCapture.h"
+#import <ZXingObjC/ZXingObjC.h>
 #import <ImageIO/ImageIO.h>
-#import "ZXingObjC.h"
 #import "JDImageUtils.h"
 
 @interface JDZXCapture () <CALayerDelegate,AVCaptureMetadataOutputObjectsDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>

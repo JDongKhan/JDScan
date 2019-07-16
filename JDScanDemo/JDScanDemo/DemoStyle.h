@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <JDScanViewStyle.h>
-#import <ZXBarcodeFormat.h>
-
+#import <ZXingObjC/ZXBarcodeFormat.h>
 
 @interface DemoStyle : NSObject
 
