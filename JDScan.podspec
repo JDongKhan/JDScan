@@ -2,11 +2,11 @@ Pod::Spec.new do |spec|
     spec.name         = 'JDScan'
     spec.version      = '2.0' 
     spec.summary      = 'ios opencv zxing scan wrapper'
-    spec.homepage     = 'https://github.com/wangjindong'
+    spec.homepage     = 'https://github.com/JDongKhan'
     spec.license      = 'MIT'
     spec.authors      = {'WJD' => '419591321@qq.com'}
     spec.platform     = :ios, '8.0'
-    spec.source       = {:git => 'https://github.com/wangjindong/JDScan.git', :tag => spec.version}
+    spec.source       = {:git => 'https://github.com/JDongKhan/JDScan.git', :tag => spec.version}
     spec.requires_arc = true
 #    spec.prefix_header_contents = '#import <Foundation/Foundation.h>'
     spec.ios.deployment_target = '8.0'
