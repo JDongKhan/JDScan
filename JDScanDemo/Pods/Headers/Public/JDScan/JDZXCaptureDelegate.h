@@ -1,1 +1,0 @@
-../../../../../JDScan/ZXing/JDZXCaptureDelegate.h

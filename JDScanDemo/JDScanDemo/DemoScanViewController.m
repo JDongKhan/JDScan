@@ -62,7 +62,7 @@
 
 - (void)showNextVCWithScanResult:(JDScanResult*)strResult {
     ScanResultViewController *vc = [ScanResultViewController new];
-    vc.imgScan = strResult.image;
+    vc.imgScan = [UIImage imageWithCGImage:strResult.image];
     vc.strScan = strResult.text;
     vc.strCodeType = strResult.type;
     [self.navigationController pushViewController:vc animated:YES];

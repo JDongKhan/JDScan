@@ -118,7 +118,7 @@
 - (void)createQR_logo {
     _qrView.hidden = NO;
     _tView.hidden = YES;
-    _qrImgView.image = [JDScanner createCodeWithString:@"419591321@qq.com" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatQRCode];
+    _qrImgView.image = [JDScanner generateCodeWithString:@"419591321@qq.com" size:_qrImgView.bounds.size codeFomart:kBarcodeFormatQRCode];
     CGSize logoSize=CGSizeMake(30, 30);
     self.logoImgView = [self roundCornerWithImage:[UIImage imageNamed:@"logo"] size:logoSize];
     _logoImgView.bounds = CGRectMake(0, 0, logoSize.width, logoSize.height);
@@ -152,13 +152,13 @@
 - (void)createCodeEAN13 {
     _qrView.hidden = YES;
     _tView.hidden = NO;
-    _tImgView.image = [JDScanner createCodeWithString:@"419591321" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatEan13];
+    _tImgView.image = [JDScanner generateCodeWithString:@"419591321" size:_qrImgView.bounds.size codeFomart:kBarcodeFormatEan13];
 }
 
 - (void)createCode128 {
     _qrView.hidden = YES;
     _tView.hidden = NO;
-    _tImgView.image = [JDScanner createCodeWithString:@"419591321" size:_qrImgView.bounds.size CodeFomart:kBarcodeFormatCode128];
+    _tImgView.image = [JDScanner generateCodeWithString:@"419591321" size:_qrImgView.bounds.size codeFomart:kBarcodeFormatCode128];
 }
 
 - (void)showError:(NSString*)str {

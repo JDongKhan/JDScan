@@ -30,7 +30,7 @@
  @param block 返回识别结果
  @return 返回封装对象
  */
-- (instancetype)initWithPreView:(UIView*)preView block:(void(^)(JDScanResult *result))block;
+- (instancetype)initWithPreView:(UIView*)preView block:(void(^)(NSArray<JDScanResult *> *result))block;
 
 
 //添加手势缩放功能
@@ -64,11 +64,6 @@
 - (void)autoFocus;
 
 /*!
- 自动缩放
- */
-- (void)autoZoom;
-
-/*!
  *  生成二维码
  *
  *  @param str  二维码字符串
@@ -76,9 +71,9 @@
  *  @param format 码的类型
  *  @return 返回生成的图像
  */
-+ (UIImage*)createCodeWithString:(NSString*)str
++ (UIImage*)generateCodeWithString:(NSString*)str
                             size:(CGSize)size
-                      CodeFomart:(ZXBarcodeFormat)format;
+                      codeFomart:(ZXBarcodeFormat)format;
 
 
 
@@ -90,6 +85,6 @@
  *  @param block 返回识别结果
  */
 + (void)recognizeImage:(UIImage*)image
-                 block:(void(^)(JDScanResult *result))block;
+                 block:(void(^)(NSArray<JDScanResult *> *results))block;
 
 @end

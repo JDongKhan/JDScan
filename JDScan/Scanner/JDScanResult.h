@@ -22,9 +22,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *type;
 
 /**
+ 识别来源
+ */
+@property (nonatomic, copy) NSString *source;
+
+/**
  识别成功的图片
  */
-@property (nonatomic, strong, nullable) UIImage *image;
+@property (nonatomic, assign, nullable) CGImageRef image;
 
 @end
 

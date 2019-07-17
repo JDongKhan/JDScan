@@ -1,1 +1,1 @@
-../../../../../JDScan/ZXing/JDScanner.h
+../../../../../JDScan/Scanner/JDScanner.h

@@ -1,25 +1,16 @@
-/*
- * Copyright 2012 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+//
+//  JDCapture.h
+//
+//  Created by WJD on 19/4/3.
+//  Copyright (c) 2019 年 WJD. All rights reserved.
+//
 
-#import "JDZXCapture.h"
+#import "JDCapture.h"
 #import <ZXingObjC/ZXingObjC.h>
 #import <ImageIO/ImageIO.h>
 #import "JDImageUtils.h"
 
-@interface JDZXCapture () <CALayerDelegate,AVCaptureMetadataOutputObjectsDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface JDCapture () <CALayerDelegate,AVCaptureMetadataOutputObjectsDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 
 @property (nonatomic, strong) CALayer *binaryLayer;
 @property (nonatomic, assign) BOOL cameraIsReady;
@@ -45,13 +36,13 @@
 
 @end
 
-@implementation JDZXCapture
+@implementation JDCapture
 
-- (JDZXCapture *)init {
+- (JDCapture *)init {
     if (self = [super init]) {
         _captureDeviceIndex = -1;
-        _videoDataQueue = dispatch_queue_create("com.zxing.videoDataQueue", NULL);
-        _metadataQueue = dispatch_queue_create("com.zxing.metadataQueue", NULL);
+        _videoDataQueue = dispatch_queue_create("com.JDCapture.videoDataQueue", NULL);
+        _metadataQueue = dispatch_queue_create("com.JDCapture.metadataQueue", NULL);
         
         _focusMode = AVCaptureFocusModeContinuousAutoFocus;
         _hardStop = NO;
@@ -143,14 +134,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     //识别原生图片
-    JDScanResult *result = [JDZXCapture recognizeImage:rotatedImage invert:self.invert];
+    NSArray *results = [JDCapture recognizeImage:rotatedImage invert:self.invert];
     //识别识别，开始使用opencv处理
-    if (result == nil) {
+    if (results == nil) {
         //将图片处理一下下
         UIImage *image1 = [JDImageUtils translator:[UIImage imageWithCGImage:rotatedImage]];
         CFRelease(rotatedImage);
         rotatedImage = CGImageRetain(image1.CGImage);
-        result = [JDZXCapture recognizeImage:rotatedImage invert:self.invert];
+        results = [JDCapture recognizeImage:rotatedImage invert:self.invert];
     }
       
     if (self.delegate && [self.delegate respondsToSelector:@selector(captureResult:preImage:)]) {
@@ -176,11 +167,9 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         });
     }
 
-    if (result) {
-      UIImage *image = [UIImage imageWithCGImage:rotatedImage];
-      result.image = image;
+    if (results) {
       dispatch_async(dispatch_get_main_queue(), ^{
-          [self.delegate captureResult:self result:result];
+          [self.delegate captureResult:self result:results];
       });
     }
     
@@ -193,15 +182,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
     @autoreleasepool {
         if ([metadataObjects count]) {
-            JDScanResult *result = nil;
             for (AVMetadataObject *obj in metadataObjects) {
                 if ([obj isKindOfClass:[AVMetadataMachineReadableCodeObject class]]) {
                     AVMetadataMachineReadableCodeObject *codeObj = (AVMetadataMachineReadableCodeObject *)obj;
-                    result = [[JDScanResult alloc] init];
+                    NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithCapacity:1];
+                    JDScanResult *result = [[JDScanResult alloc] init];
                     result.text = [codeObj.stringValue copy];
                     result.type = [codeObj.type copy];
+                    [mutableArray addObject:result];
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.delegate captureResult:self result:result];
+                        [self.delegate captureResult:self result:mutableArray];
                     });
                     break;
                 }
@@ -236,6 +226,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self stillImageOutput];
     [self videoDataOutput];
     [self metadataOutput];
+    
     if (!self.session.running) {
         static int i = 0;
         if (++i == -2) {
@@ -273,7 +264,28 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   }
 }
 
-+ (JDScanResult *)recognizeImage:(CGImageRef)image invert:(BOOL)invert {
++ (NSArray *)recognizeImage:(CGImageRef)image invert:(BOOL)invert {
+    NSMutableArray<JDScanResult*> *mutableArray = nil;
+    
+    //只能识别二维码  此处暂时用它做一层
+    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
+    NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image]];
+    if (features != nil && features.count > 0) {
+        mutableArray = [[NSMutableArray alloc] initWithCapacity:1];
+        for (int index = 0; index < [features count]; index ++) {
+            CIQRCodeFeature *feature = [features objectAtIndex:index];
+            NSString *scannedResult = feature.messageString;
+            JDScanResult *item = [[JDScanResult alloc] init];
+            item.text = scannedResult;
+            item.source = @"CIDetector";
+            item.type = CIDetectorTypeQRCode;
+            item.image = image;
+            [mutableArray addObject:item];
+        }
+        return mutableArray;
+    }
+    
+    //zxing 识别二维码
     ZXCGImageLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:image];
     ZXHybridBinarizer *binarizer = [[ZXHybridBinarizer alloc] initWithSource:invert ? [source invert] : source];
     ZXBinaryBitmap *bitmap = [[ZXBinaryBitmap alloc] initWithBinarizer:binarizer];
@@ -283,14 +295,18 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     ZXResult *result = [reader decode:bitmap hints:_hints error:&error];
     JDScanResult *newResult = nil;
     if (result != nil) {
+        mutableArray = [[NSMutableArray alloc] initWithCapacity:1];
         newResult = [[JDScanResult alloc] init];
         newResult.text = result.text;
-        newResult.type = [JDZXCapture strBarCodeType:result.barcodeFormat];
+        newResult.image = image;
+        newResult.source = @"ZXSource";
+        newResult.type = [JDCapture strBarCodeType:result.barcodeFormat];
+        [mutableArray addObject:newResult];
     }
-    return newResult;
+    return mutableArray;
 }
 
-+ (UIImage*)createCodeWithString:(NSString*)str size:(CGSize)size CodeFomart:(ZXBarcodeFormat)format {
++ (UIImage*)generateCodeWithString:(NSString*)str size:(CGSize)size codeFomart:(ZXBarcodeFormat)format {
     ZXMultiFormatWriter *writer = [[ZXMultiFormatWriter alloc] init];
     ZXBitMatrix *result = [writer encode:str
                                   format:format
@@ -338,7 +354,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
-- (void)setDelegate:(id<JDZXCaptureDelegate>)delegate {
+- (void)setDelegate:(id<JDCaptureDelegate>)delegate {
     _delegate = delegate;
 }
 
@@ -498,31 +514,31 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     AVCaptureDevice *device = nil;
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    if ([devices count] > 0) {
-        if (self.captureDeviceIndex == -1) {
-            AVCaptureDevicePosition position = AVCaptureDevicePositionBack;
-            if (self.camera == self.front) {
-                position = AVCaptureDevicePositionFront;
-            }
-            
-            for (unsigned int i = 0; i < [devices count]; ++i) {
-                AVCaptureDevice *dev = [devices objectAtIndex:i];
-                if (dev.position == position) {
-                    self.captureDeviceIndex = i;
-                    device = dev;
-                    break;
-                }
-            }
-        }
-        
-        if (!device && self.captureDeviceIndex != -1) {
-            device = [devices objectAtIndex:self.captureDeviceIndex];
-        }
-    }
-    if (!device) {
-        device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    }
+//    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+//    if ([devices count] > 0) {
+//        if (self.captureDeviceIndex == -1) {
+//            AVCaptureDevicePosition position = AVCaptureDevicePositionBack;
+//            if (self.camera == self.front) {
+//                position = AVCaptureDevicePositionFront;
+//            }
+//
+//            for (unsigned int i = 0; i < [devices count]; ++i) {
+//                AVCaptureDevice *dev = [devices objectAtIndex:i];
+//                if (dev.position == position) {
+//                    self.captureDeviceIndex = i;
+//                    device = dev;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if (!device && self.captureDeviceIndex != -1) {
+//            device = [devices objectAtIndex:self.captureDeviceIndex];
+//        }
+//    }
+//    if (!device) {
+    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+//    }
     self.captureDevice = device;
     NSError *error = nil;
     if ([device lockForConfiguration:&error] || error) {

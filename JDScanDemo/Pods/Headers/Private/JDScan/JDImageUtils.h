@@ -1,1 +1,1 @@
-../../../../../JDScan/ZXing/JDImageUtils.h
+../../../../../JDScan/Scanner/JDImageUtils.h

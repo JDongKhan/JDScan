@@ -1,28 +1,16 @@
-/*
- * Copyright 2012 ZXing authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+//
+//  JDCapture.h
+//
+//  Created by WJD on 19/4/3.
+//  Copyright (c) 2019 年 WJD. All rights reserved.
+//
 
 #import <AVFoundation/AVFoundation.h>
 #import <ZXingObjC/ZXBarcodeFormat.h>
 #import "JDScanResult.h"
-#import "JDZXCaptureDelegate.h"
+#import "JDCaptureDelegate.h"
 
-@protocol JDZXCaptureDelegate, ZXReader;
-@class ZXDecodeHints;
-
-@interface JDZXCapture : NSObject <CAAction>
+@interface JDCapture : NSObject <CAAction>
 
 /**
  摄像头 1:后置摄像头 0:前置摄像头
@@ -31,34 +19,48 @@
 
 @property (nonatomic, strong) AVCaptureDevice *captureDevice;
 
-@property (nonatomic, weak) id<JDZXCaptureDelegate> delegate;
-@property (nonatomic, assign) AVCaptureFocusMode focusMode;
-@property (nonatomic, assign) BOOL invert;
-@property (nonatomic, strong, readonly) CALayer *layer;
-@property (nonatomic, assign) BOOL mirror;
-@property (nonatomic, assign) CGFloat rotation;
-@property (nonatomic, assign, readonly) BOOL running;
+@property (nonatomic, weak) id<JDCaptureDelegate> delegate;
 
+@property (nonatomic, assign) AVCaptureFocusMode focusMode;
+
+@property (nonatomic, assign) BOOL invert;
+
+@property (nonatomic, strong, readonly) CALayer *layer;
+
+@property (nonatomic, assign) BOOL mirror;
+
+@property (nonatomic, assign) CGFloat rotation;
+
+@property (nonatomic, assign, readonly) BOOL running;
 
 //扫描区域
 @property (nonatomic, assign) CGRect zxingRect;
+
 @property (nonatomic, assign) CGRect nativeRect;
 
 @property (nonatomic, copy) NSString *sessionPreset;
+
 //是否开启灯光
 @property (nonatomic, assign) BOOL torch;
+
 @property (nonatomic, assign) CGAffineTransform transform;
 
 - (int)back;
+
 - (int)front;
+
 - (BOOL)hasBack;
+
 - (BOOL)hasFront;
+
 - (BOOL)hasTorch;
 
 - (CALayer *)binary;
+
 - (void)setBinary:(BOOL)on_off;
 
 - (CALayer *)luminance;
+
 - (void)setLuminance:(BOOL)on_off;
 
 
@@ -66,6 +68,7 @@
  灯光操作
  */
 - (void)setTorch:(BOOL)torch;
+
 - (void)changeTorch;
 
 
@@ -99,7 +102,7 @@
  @param invert 是否反转
  @return 识别的结果
  */
-+ (JDScanResult *)recognizeImage:(CGImageRef)image invert:(BOOL)invert;
++ (NSArray *)recognizeImage:(CGImageRef)image invert:(BOOL)invert;
 
 
 /**
@@ -110,6 +113,6 @@
  @param format 格式
  @return 二维码图片
  */
-+ (UIImage *)createCodeWithString:(NSString*)str size:(CGSize)size CodeFomart:(ZXBarcodeFormat)format;
++ (UIImage *)generateCodeWithString:(NSString*)str size:(CGSize)size codeFomart:(ZXBarcodeFormat)format;
 
 @end

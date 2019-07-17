@@ -7,14 +7,14 @@
 //
 
 #import "JDScanner.h"
-#import "JDZXCaptureDelegate.h"
-#import "JDZXCapture.h"
+#import "JDCaptureDelegate.h"
+#import "JDCapture.h"
 
-typedef void(^JDScanBlock)(JDScanResult *result);
+typedef void(^JDScanBlock)(NSArray<JDScanResult *>  *result);
 
-@interface JDScanner() <JDZXCaptureDelegate>
+@interface JDScanner() <JDCaptureDelegate>
 
-@property (nonatomic, strong) JDZXCapture *capture;
+@property (nonatomic, strong) JDCapture *capture;
 
 @property (nonatomic,copy) JDScanBlock block;
 
@@ -24,8 +24,6 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 @property (nonatomic, strong) NSTimer *focusTimer;
 
-@property (nonatomic, strong) NSTimer *zoomTimer;
-
 @property (nonatomic, weak) UIView *preView;
 
 @end
@@ -34,7 +32,7 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 - (id)init {
     if ( self = [super init]) {
-        self.capture = [[JDZXCapture alloc] init];
+        self.capture = [[JDCapture alloc] init];
         self.capture.camera = self.capture.back;
         self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
@@ -44,10 +42,10 @@ typedef void(^JDScanBlock)(JDScanResult *result);
     return self;
 }
 
-- (id)initWithPreView:(UIView*)preView block:(void(^)(JDScanResult *result))block {
+- (id)initWithPreView:(UIView*)preView block:(void(^)(NSArray<JDScanResult *> *result))block {
     if (self = [super init]) {
         _preView = preView;
-        self.capture = [[JDZXCapture alloc] init];
+        self.capture = [[JDCapture alloc] init];
         self.capture.camera = self.capture.back;
         self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
@@ -81,8 +79,6 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 - (void)stop {
     self.bNeedScanResult = NO;
     [self.capture stop];
-    //关闭缩放
-    [self stopZoom];
 }
 
 - (void)openTorch:(BOOL)on_off {
@@ -95,7 +91,7 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 #pragma mark - ZXCaptureDelegate Methods
 
-- (void)captureResult:(JDZXCapture *)capture result:(JDScanResult *)result {
+- (void)captureResult:(JDCapture *)capture result:(NSArray<JDScanResult *> *)result {
     if (!result) return;
     if (self.bNeedScanResult == NO) {
         return;
@@ -106,7 +102,7 @@ typedef void(^JDScanBlock)(JDScanResult *result);
     }    
 }
 
-- (void)captureResult:(JDZXCapture *)capture preImage:(UIImage *)preImage {
+- (void)captureResult:(JDCapture *)capture preImage:(UIImage *)preImage {
     if (self.preImageBlock != nil) {
         self.preImageBlock(preImage);
     }
@@ -114,23 +110,22 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 
 #pragma mark  ---------- 功能方法 ---------------
-+ (UIImage*)createCodeWithString:(NSString*)str size:(CGSize)size CodeFomart:(ZXBarcodeFormat)format {
-    return [JDZXCapture createCodeWithString:str size:size CodeFomart:format];
++ (UIImage*)generateCodeWithString:(NSString*)str size:(CGSize)size codeFomart:(ZXBarcodeFormat)format {
+    return [JDCapture generateCodeWithString:str size:size codeFomart:format];
 }
 
 + (void)recognizeImage:(UIImage *)image
-                 block:(void(^)(JDScanResult *result))block {
-    JDScanResult *result = [JDZXCapture recognizeImage:image.CGImage invert:NO] ;
-    if (result == nil) {
+                 block:(void(^)(NSArray<JDScanResult *> *results))block {
+    NSArray<JDScanResult *> *results = [JDCapture recognizeImage:image.CGImage invert:NO] ;
+    if (results == nil) {
         block(nil);
         return;
     }
-    block(result);
+    block(results);
 }
 
 - (void)dealloc {
     [self stopFocus];
-    [self stopZoom];
 }
 
 #pragma mark -------- 捏合手势拉近拉远 ---
@@ -154,43 +149,6 @@ typedef void(^JDScanBlock)(JDScanResult *result);
 
 - (CGFloat)maxZoomFactor {
     return MIN(self.capture.captureDevice.activeFormat.videoMaxZoomFactor, 8.0f);
-}
-
-#pragma mark -------- zoom ---
-- (void)autoZoom {
-    if (self.zoomTimer == nil || ![self.zoomTimer isValid]) {
-        self.zoomTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(startZoom) userInfo:nil repeats:NO];
-    }
-}
-
-- (void)startZoom {
-    CGFloat videoMaxZoomFactor = MIN([self maxZoomFactor], 6.0f);
-    CGFloat videoZoomFactor = videoMaxZoomFactor/2.0f;
-    if (![self.capture.captureDevice isRampingVideoZoom]
-        && self.capture.captureDevice.videoZoomFactor < videoZoomFactor) {
-        AVCaptureDevice *captureDevice =[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-        NSError *cerror = nil;
-        [captureDevice lockForConfiguration:&cerror];
-        
-        CGFloat maxRate = 6.0f;
-        CGFloat rate = maxRate*0.5f+(videoZoomFactor-1.0f)*(maxRate*0.5f)/(videoMaxZoomFactor-1.0f);
-        //The zoom factor is continuously scaled by pow(2,rate * time)
-        [self.capture.captureDevice rampToVideoZoomFactor:videoZoomFactor withRate:rate];
-        self.scale = videoZoomFactor;
-        if (self.capture.captureDevice.isFocusPointOfInterestSupported
-            && [self.capture.captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
-            [self.capture.captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
-        }
-        [self.capture.captureDevice unlockForConfiguration];
-    }
-}
-
-- (void)stopZoom {
-    if (_zoomTimer == nil) {
-        return;
-    }
-    [_zoomTimer invalidate];
-    _zoomTimer = nil;
 }
 
 #pragma mark -------- focus ---

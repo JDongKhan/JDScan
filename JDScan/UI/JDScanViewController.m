@@ -113,8 +113,8 @@
 - (void)startScan {
     if (!_zxing) {
         __weak __typeof(self) weakSelf = self;
-        _zxing = [[JDScanner alloc] initWithPreView:self.videoView block:^(JDScanResult *result) {
-            [weakSelf scanResultWithArray:@[result]];
+        _zxing = [[JDScanner alloc] initWithPreView:self.videoView block:^(NSArray<JDScanResult *> *results) {
+            [weakSelf scanResultWithArray:results];
         }];
         self.zxing.preImageBlock = ^(UIImage *preImage) {
             weakSelf.imageView.image = preImage;
@@ -143,9 +143,6 @@
     //开始扫描
     [self start];
     
-    if (_style.supportAutoZoom) {
-        [_zxing autoZoom];
-    }
     if (_style.supportAutoFocus) {
         [_zxing autoFocus];
     }
@@ -209,8 +206,8 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDScanner recognizeImage:image block:^(JDScanResult *result) {
-        [weakSelf scanResultWithArray:@[result]];
+    [JDScanner recognizeImage:image block:^(NSArray<JDScanResult *>  *results) {
+        [weakSelf scanResultWithArray:results];
     }];
 
 }

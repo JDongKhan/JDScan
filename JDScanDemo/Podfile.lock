@@ -1,10 +1,10 @@
 PODS:
-  - JDScan (1.2):
-    - JDScan/UI (= 1.2)
-  - JDScan/UI (1.2):
-    - JDScan/ZXing
-  - JDScan/ZXing (1.2):
+  - JDScan (2.0.5):
+    - JDScan/UI (= 2.0.5)
+  - JDScan/Scanner (2.0.5):
     - ZXingObjC (~> 3.6.5)
+  - JDScan/UI (2.0.5):
+    - JDScan/Scanner
   - ZXingObjC (3.6.5):
     - ZXingObjC/All (= 3.6.5)
   - ZXingObjC/All (3.6.5)
@@ -21,9 +21,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  JDScan: 77bcd39312d1c3f66d5b6c299e985812869a543c
+  JDScan: 3219b5c336722bc608efe7b842a473f7bfe0c66c
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
 PODFILE CHECKSUM: fb85bd43a08732d99dee056add050b5cb7315acc
 
-COCOAPODS: 1.7.3
+COCOAPODS: 1.7.4

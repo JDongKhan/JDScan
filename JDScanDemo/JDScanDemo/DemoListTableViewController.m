@@ -249,8 +249,8 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
     __weak __typeof(self) weakSelf = self;
-    [JDScanner recognizeImage:image block:^(JDScanResult *result) {
-        [weakSelf scanResultWithArray:@[result]];
+    [JDScanner recognizeImage:image block:^(NSArray<JDScanResult *> *results) {
+        [weakSelf scanResultWithArray:results];
     }];
 }
 
@@ -277,7 +277,7 @@
 
 - (void)showNextVCWithScanResult:(JDScanResult*)strResult {
     ScanResultViewController *vc = [ScanResultViewController new];
-    vc.imgScan = strResult.image;
+    vc.imgScan = [UIImage imageWithCGImage:strResult.image];
     vc.strScan = strResult.text;
     vc.strCodeType = strResult.type;
     [self.navigationController pushViewController:vc animated:YES];

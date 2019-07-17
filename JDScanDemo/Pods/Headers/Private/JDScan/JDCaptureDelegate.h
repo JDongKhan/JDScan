@@ -1,0 +1,1 @@
+../../../../../JDScan/Scanner/JDCaptureDelegate.h
