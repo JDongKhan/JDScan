@@ -268,22 +268,23 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSMutableArray<JDScanResult*> *mutableArray = nil;
     
     //只能识别二维码  此处暂时用它做一层
-    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
-    NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image]];
-    if (features != nil && features.count > 0) {
-        mutableArray = [[NSMutableArray alloc] initWithCapacity:1];
-        for (int index = 0; index < [features count]; index ++) {
-            CIQRCodeFeature *feature = [features objectAtIndex:index];
-            NSString *scannedResult = feature.messageString;
-            JDScanResult *item = [[JDScanResult alloc] init];
-            item.text = scannedResult;
-            item.source = @"CIDetector";
-            item.type = CIDetectorTypeQRCode;
-            item.image = image;
-            [mutableArray addObject:item];
-        }
-        return mutableArray;
-    }
+    //据说这个方法很慢，有待研究
+//    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
+//    NSArray *features = [detector featuresInImage:[CIImage imageWithCGImage:image]];
+//    if (features != nil && features.count > 0) {
+//        mutableArray = [[NSMutableArray alloc] initWithCapacity:1];
+//        for (int index = 0; index < [features count]; index ++) {
+//            CIQRCodeFeature *feature = [features objectAtIndex:index];
+//            NSString *scannedResult = feature.messageString;
+//            JDScanResult *item = [[JDScanResult alloc] init];
+//            item.text = scannedResult;
+//            item.source = @"CIDetector";
+//            item.type = CIDetectorTypeQRCode;
+//            item.image = image;
+//            [mutableArray addObject:item];
+//        }
+//        return mutableArray;
+//    }
     
     //zxing 识别二维码
     ZXCGImageLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:image];
