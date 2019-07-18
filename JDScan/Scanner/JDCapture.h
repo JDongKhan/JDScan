@@ -13,15 +13,13 @@
 @interface JDCapture : NSObject <CAAction>
 
 /**
- 摄像头 1:后置摄像头 0:前置摄像头
+ 摄像头 0:后置摄像头 1:前置摄像头
  */
 @property (nonatomic, assign) int camera;
 
 @property (nonatomic, strong) AVCaptureDevice *captureDevice;
 
 @property (nonatomic, weak) id<JDCaptureDelegate> delegate;
-
-@property (nonatomic, assign) AVCaptureFocusMode focusMode;
 
 @property (nonatomic, assign) BOOL invert;
 
@@ -83,7 +81,7 @@
 /**
  开始扫描
  */
-- (void)start;
+- (NSError *)start;
 
 /**
  停止扫描

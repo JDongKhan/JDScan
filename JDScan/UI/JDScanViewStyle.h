@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  支持自动缩放
  */
-@property (nonatomic, assign) BOOL supportZoom;
+@property (nonatomic, assign) BOOL supportAutoZoom;
 
 /**
  支持自动对焦

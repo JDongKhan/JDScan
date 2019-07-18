@@ -9,6 +9,7 @@
 #import "JDScanner.h"
 #import "JDCaptureDelegate.h"
 #import "JDCapture.h"
+#import "JDZXDetectorHook.h"
 
 typedef void(^JDScanBlock)(NSArray<JDScanResult *>  *result);
 
@@ -34,7 +35,6 @@ typedef void(^JDScanBlock)(NSArray<JDScanResult *>  *result);
     if ( self = [super init]) {
         self.capture = [[JDCapture alloc] init];
         self.capture.camera = self.capture.back;
-        self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
         self.scale = 1.0f;
         self.capture.delegate = self;
@@ -47,7 +47,6 @@ typedef void(^JDScanBlock)(NSArray<JDScanResult *>  *result);
         _preView = preView;
         self.capture = [[JDCapture alloc] init];
         self.capture.camera = self.capture.back;
-        self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
         self.scale = 1.0f;
         self.capture.delegate = self;
@@ -71,9 +70,9 @@ typedef void(^JDScanBlock)(NSArray<JDScanResult *>  *result);
     self.capture.nativeRect = nativeRect;
 }
 
-- (void)start {
+- (NSError *)start {
     self.bNeedScanResult = YES;
-    [self.capture start];
+    return [self.capture start];
 }
 
 - (void)stop {
@@ -169,6 +168,11 @@ typedef void(^JDScanBlock)(NSArray<JDScanResult *>  *result);
     }
     [_focusTimer invalidate];
     _focusTimer = nil;
+}
+
+#pragma mark -------- zoom ------
+- (void)autoZoom {
+    [JDZXDetectorHook startHook];
 }
 
 @end

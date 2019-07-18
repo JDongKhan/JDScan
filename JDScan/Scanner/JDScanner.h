@@ -39,7 +39,7 @@
 /*!
  *  开始扫码
  */
-- (void)start;
+- (NSError *)start;
 
 /*!
  *  停止扫码
@@ -62,6 +62,11 @@
  自动对焦
  */
 - (void)autoFocus;
+
+/**
+ 自动缩放
+ */
+- (void)autoZoom;
 
 /*!
  *  生成码

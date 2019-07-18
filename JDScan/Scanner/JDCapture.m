@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) CALayer *binaryLayer;
 @property (nonatomic, assign) BOOL cameraIsReady;
-@property (nonatomic, assign) int captureDeviceIndex;
 @property (nonatomic, assign) BOOL hardStop;
 @property (nonatomic, strong) AVCaptureDeviceInput *input;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *layer;
@@ -34,26 +33,31 @@
 @property (nonatomic, assign) BOOL running;
 @property (nonatomic, strong) AVCaptureSession *session;
 
+//ZX
+@property (nonatomic, strong) id<ZXReader> reader;
+@property (nonatomic, strong) ZXDecodeHints *hints;
+
 @end
 
 @implementation JDCapture
 
 - (JDCapture *)init {
     if (self = [super init]) {
-        _captureDeviceIndex = -1;
         _videoDataQueue = dispatch_queue_create("com.JDCapture.videoDataQueue", NULL);
         _metadataQueue = dispatch_queue_create("com.JDCapture.metadataQueue", NULL);
         
-        _focusMode = AVCaptureFocusModeContinuousAutoFocus;
         _hardStop = NO;
         _onScreen = NO;
         _orderInSkip = 0;
         _orderOutSkip = 0;
-        _rotation = 0.0f;
+        _rotation = 90.0f;
         _running = NO;
         _sessionPreset = AVCaptureSessionPresetHigh;
         _transform = CGAffineTransformIdentity;
     
+        _reader = [ZXMultiFormatReader reader];
+        _hints = [ZXDecodeHints hints];
+        
         _zxingRect = CGRectZero;
         _nativeRect = CGRectZero;
     }
@@ -120,7 +124,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         });
       }
     }
-      
+    
     CVImageBufferRef videoFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
     CGImageRef videoFrameImage = [ZXCGImageLuminanceSource createImageFromBuffer:videoFrame];
     CGImageRef rotatedImage = [self createRotatedImage:videoFrameImage degrees:self.rotation];
@@ -134,14 +138,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     //识别原生图片
-    NSArray *results = [JDCapture recognizeImage:rotatedImage invert:self.invert];
+    NSArray *results = [JDCapture recognizeImage:rotatedImage invert:self.invert reader:self.reader hints:self.hints];
     //识别识别，开始使用opencv处理
     if (results == nil) {
         //将图片处理一下下
         UIImage *image1 = [JDImageUtils translator:[UIImage imageWithCGImage:rotatedImage]];
         CFRelease(rotatedImage);
         rotatedImage = CGImageRetain(image1.CGImage);
-        results = [JDCapture recognizeImage:rotatedImage invert:self.invert];
+        results = [JDCapture recognizeImage:rotatedImage invert:self.invert reader:self.reader hints:self.hints];
     }
       
     if (self.delegate && [self.delegate respondsToSelector:@selector(captureResult:preImage:)]) {
@@ -216,13 +220,21 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.orderOutSkip = 1;
 }
 
-- (void)start {
+- (NSError *)start {
+    NSError *error = nil;
     if (self.running) {
-        return;
+        return nil;
     }
     if (self.hardStop) {
-        return;
+        return nil;
     }
+    //添加input
+    error = [self replaceInput];
+    if (error != nil) {
+        return error;
+    }
+    
+    //添加output
     [self stillImageOutput];
     [self videoDataOutput];
     [self metadataOutput];
@@ -235,6 +247,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [self.session startRunning];
     }
     self.running = YES;
+    return error;
 }
 
 - (void)stop {
@@ -264,7 +277,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   }
 }
 
+
 + (NSArray *)recognizeImage:(CGImageRef)image invert:(BOOL)invert {
+    return [self recognizeImage:image invert:invert reader:[ZXMultiFormatReader reader] hints:[ZXDecodeHints hints]];
+}
+
++ (NSArray *)recognizeImage:(CGImageRef)image invert:(BOOL)invert reader:(id<ZXReader>)reader hints:(ZXDecodeHints *)hints {
     NSMutableArray<JDScanResult*> *mutableArray = nil;
     
     //只能识别二维码  此处暂时用它做一层
@@ -291,9 +309,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     ZXHybridBinarizer *binarizer = [[ZXHybridBinarizer alloc] initWithSource:invert ? [source invert] : source];
     ZXBinaryBitmap *bitmap = [[ZXBinaryBitmap alloc] initWithBinarizer:binarizer];
     NSError *error;
-    id<ZXReader> reader  = [ZXMultiFormatReader reader];
-    ZXDecodeHints *_hints = [ZXDecodeHints hints];
-    ZXResult *result = [reader decode:bitmap hints:_hints error:&error];
+    ZXResult *result = [reader decode:bitmap hints:hints error:&error];
     JDScanResult *newResult = nil;
     if (result != nil) {
         mutableArray = [[NSMutableArray alloc] initWithCapacity:1];
@@ -349,7 +365,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)setCamera:(int)camera {
     if (_camera != camera) {
         _camera = camera;
-        self.captureDeviceIndex = -1;
         self.captureDevice = nil;
         [self replaceInput];
     }
@@ -357,16 +372,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)setDelegate:(id<JDCaptureDelegate>)delegate {
     _delegate = delegate;
-}
-
-- (void)setFocusMode:(AVCaptureFocusMode)focusMode {
-    if ([self.input.device isFocusModeSupported:focusMode] && self.input.device.focusMode != focusMode) {
-        _focusMode = focusMode;
-        
-        [self.input.device lockForConfiguration:nil];
-        self.input.device.focusMode = focusMode;
-        [self.input.device unlockForConfiguration];
-    }
 }
 
 - (void)setMirror:(BOOL)mirror {
@@ -398,11 +403,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark - Back, Front, Torch
 
 - (int)back {
-    return 1;
+    return 0;
 }
 
 - (int)front {
-    return 0;
+    return 1;
 }
 
 - (BOOL)hasFront {
@@ -509,40 +514,52 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     return _metadataOutput;
 }
 
+
+- (AVCaptureDevice *)frontCamera {
+    AVCaptureDevice *inputDevice = [self cameraWithPosition:AVCaptureDevicePositionFront];
+    return inputDevice;
+}
+
+- (AVCaptureDevice *)backCamera {
+    AVCaptureDevice *inputDevice = [self cameraWithPosition:AVCaptureDevicePositionBack];
+    return inputDevice;
+}
+
+- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position {
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    for (AVCaptureDevice *device in devices) {
+        if ([device position] == position) {
+            return device;
+        }
+    }
+    return nil;
+}
+
 - (AVCaptureDevice *)device {
     if (self.captureDevice) {
         return self.captureDevice;
     }
-    
-    AVCaptureDevice *device = nil;
-//    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-//    if ([devices count] > 0) {
-//        if (self.captureDeviceIndex == -1) {
-//            AVCaptureDevicePosition position = AVCaptureDevicePositionBack;
-//            if (self.camera == self.front) {
-//                position = AVCaptureDevicePositionFront;
-//            }
-//
-//            for (unsigned int i = 0; i < [devices count]; ++i) {
-//                AVCaptureDevice *dev = [devices objectAtIndex:i];
-//                if (dev.position == position) {
-//                    self.captureDeviceIndex = i;
-//                    device = dev;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        if (!device && self.captureDeviceIndex != -1) {
-//            device = [devices objectAtIndex:self.captureDeviceIndex];
-//        }
-//    }
-//    if (!device) {
-    device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-//    }
+    AVCaptureDevice *device;
+    if (_camera == 0) {
+        device = [self backCamera];
+    } else if (_camera == 1) {
+        device = [self frontCamera];
+    }
     self.captureDevice = device;
+    
     NSError *error = nil;
     if ([device lockForConfiguration:&error] || error) {
+        
+        if ([device hasFlash]) {
+            device.flashMode = AVCaptureFlashModeOff;
+        }
+        
+        // 增强低光模式
+        if (device.isLowLightBoostSupported) {
+            device.automaticallyEnablesLowLightBoostWhenAvailable = YES;
+        }
+        
+        //白平衡
         if ([device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance]) {
             [device setWhiteBalanceMode:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
         }
@@ -559,7 +576,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     return device;
 }
 
-- (void)replaceInput {
+- (NSError *)replaceInput {
     [self.session beginConfiguration];
     if (self.session && self.input) {
         [self.session removeInput:self.input];
@@ -567,25 +584,32 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     AVCaptureDevice *device = [self device];
     if (device) {
-        self.input = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
-        self.focusMode = self.focusMode;
+        NSError *error = nil;
+        self.input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+        
+        if (nil == self.input || error != nil) {
+            NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"您已关闭相机使用权限，请至手机“设置->隐私->相机”中打开"};
+            return ([NSError errorWithDomain:@"" code:-1 userInfo:userInfo]);
+        }
     }
     if (self.input) {
         [self.session addInput:self.input];
     }
     [self.session commitConfiguration];
+    
+    return nil;
 }
 
 - (AVCaptureSession *)session {
     if (!_session) {
         _session = [[AVCaptureSession alloc] init];
         _session.sessionPreset = self.sessionPreset;
-        [self replaceInput];
     }
     return _session;
 }
 
 
+//自动聚焦
 - (void)autoFocus {
     CGPoint pointOfInterest = CGPointMake(0.5, 0.5);
     NSError *error = nil;

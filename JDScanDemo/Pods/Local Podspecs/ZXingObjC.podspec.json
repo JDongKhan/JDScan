@@ -1,0 +1,113 @@
+{
+  "name": "ZXingObjC",
+  "version": "3.1.1",
+  "summary": "An Objective-C Port of the ZXing barcode framework.",
+  "description": "An Objective-C Port of the ZXing barcode framework.",
+  "homepage": "https://github.com/TheLevelUp/ZXingObjC",
+  "authors": "ZXingObjC team",
+  "source": {
+    "svn": "http://10.27.164.97/svn/ipods/branches/ipods_V1.0.0/ZXingObjC/3.1.1/ZXingObjC"
+  },
+  "requires_arc": true,
+  "xcconfig": {
+    "OTHER_LDFLAGS": "-ObjC"
+  },
+  "platforms": {
+    "ios": "6.0"
+  },
+  "ios": {
+    "frameworks": [
+      "AVFoundation",
+      "CoreGraphics",
+      "CoreMedia",
+      "CoreVideo",
+      "ImageIO",
+      "QuartzCore"
+    ]
+  },
+  "osx": {
+    "frameworks": [
+      "AVFoundation",
+      "CoreMedia",
+      "QuartzCore"
+    ]
+  },
+  "subspecs": [
+    {
+      "name": "All",
+      "source_files": [
+        "ZXingObjC/**/*.{h,m}",
+        "ZXingObjC/*.{h,m}"
+      ],
+      "preserve_paths": [
+        "ZXingObjC/**/*.{h,m}",
+        "ZXingObjC/*.{h,m}"
+      ]
+    },
+    {
+      "name": "Aztec",
+      "dependencies": {
+        "ZXingObjC/Core": [
+
+        ]
+      },
+      "source_files": "ZXingObjC/aztec/**/*.{h,m}",
+      "preserve_paths": "ZXingObjC/aztec/**/*.{h,m}"
+    },
+    {
+      "name": "Core",
+      "source_files": [
+        "ZXingObjC/client/*.{h,m}",
+        "ZXingObjC/common/**/*.{h,m}",
+        "ZXingObjC/core/*.{h,m}",
+        "ZXingObjC/multi/*.{h,m}"
+      ]
+    },
+    {
+      "name": "DataMatrix",
+      "dependencies": {
+        "ZXingObjC/Core": [
+
+        ]
+      },
+      "source_files": "ZXingObjC/datamatrix/**/*.{h,m}",
+      "preserve_paths": "ZXingObjC/datamatrix/**/*.{h,m}"
+    },
+    {
+      "name": "MaxiCode",
+      "dependencies": {
+        "ZXingObjC/Core": [
+
+        ]
+      },
+      "source_files": "ZXingObjC/maxicode/**/*.{h,m}",
+      "preserve_paths": "ZXingObjC/maxicode/**/*.{h,m}"
+    },
+    {
+      "name": "OneD",
+      "dependencies": {
+        "ZXingObjC/Core": [
+
+        ]
+      },
+      "source_files": [
+        "ZXingObjC/oned/**/*.{h,m}",
+        "ZXingObjC/client/result/*.{h,m}"
+      ],
+      "preserve_paths": [
+        "ZXingObjC/oned/**/*.{h,m}",
+        "ZXingObjC/client/result/*.{h,m}"
+      ]
+    },
+    {
+      "name": "QRCode",
+      "dependencies": {
+        "ZXingObjC/Core": [
+
+        ]
+      },
+      "source_files": "ZXingObjC/qrcode/**/*.{h,m}",
+      "preserve_paths": "ZXingObjC/qrcode/**/*.{h,m}"
+    }
+  ]
+}

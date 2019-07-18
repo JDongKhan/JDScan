@@ -146,6 +146,11 @@
     if (_style.supportAutoFocus) {
         [_zxing autoFocus];
     }
+    
+    if (_style.supportAutoZoom) {
+        [_zxing autoZoom];
+    }
+    
     self.view.backgroundColor = [UIColor clearColor];
 }
 
