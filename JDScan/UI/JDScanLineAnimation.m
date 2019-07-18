@@ -1,9 +1,9 @@
 //
 //  JDScanLineAnimation.m
-//  JDScan
+//  JDScanner
 //
-//  Created by WJD on 17/5/11.
-//  Copyright © 2017年 WJD. All rights reserved.
+//  Created by WJD on 19/4/3.
+//  Copyright © 2019 年 WJD. All rights reserved.
 //
 
 #import "JDScanLineAnimation.h"

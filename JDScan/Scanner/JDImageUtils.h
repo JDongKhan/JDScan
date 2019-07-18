@@ -1,9 +1,9 @@
 //
-//  ImageUtils.h
-//  ios_opencv_picture
+//  JDImageUtils.h
+//  JDScanner
 //
-//  Created by JD on 2019/7/11.
-//  Copyright © 2019 JD. All rights reserved.
+//  Created by WJD on 2019/7/11.
+//  Copyright © 2019 WJD. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

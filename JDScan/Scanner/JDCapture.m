@@ -1,5 +1,6 @@
 //
 //  JDCapture.h
+//  JDScanner
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
@@ -12,12 +13,10 @@
 
 @interface JDCapture () <CALayerDelegate,AVCaptureMetadataOutputObjectsDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 
-@property (nonatomic, strong) CALayer *binaryLayer;
 @property (nonatomic, assign) BOOL cameraIsReady;
 @property (nonatomic, assign) BOOL hardStop;
 @property (nonatomic, strong) AVCaptureDeviceInput *input;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *layer;
-@property (nonatomic, strong) CALayer *luminanceLayer;
 @property (nonatomic, assign) int orderInSkip;
 @property (nonatomic, assign) int orderOutSkip;
 @property (nonatomic, assign) BOOL onScreen;
@@ -98,7 +97,6 @@
       self.orderInSkip--;
       return;
     }
-
     self.onScreen = YES;
   } else if ([key isEqualToString:kCAOnOrderOut]) {
     if (self.orderOutSkip) {
@@ -154,22 +152,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [self.delegate captureResult:self preImage:image];
         });
     }
-      
-    if (self.luminanceLayer) {
-        CGImageRef image = CGImageRetain(rotatedImage);
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0), dispatch_get_main_queue(), ^{
-            self.luminanceLayer.contents = (__bridge id)image;
-            CGImageRelease(image);
-        });
-    }
-      
-    if (self.binaryLayer) {
-        CGImageRef image = CGImageRetain(rotatedImage);
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0), dispatch_get_main_queue(), ^{
-            self.binaryLayer.contents = (__bridge id)image;
-            CGImageRelease(image);
-        });
-    }
 
     if (results) {
       dispatch_async(dispatch_get_main_queue(), ^{
@@ -209,7 +191,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)hard_stop {
     self.hardStop = YES;
-    
     if (self.running) {
         [self stop];
     }
@@ -239,14 +220,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self videoDataOutput];
     [self metadataOutput];
     
+    //run
     if (!self.session.running) {
-        static int i = 0;
-        if (++i == -2) {
-            abort();
-        }
         [self.session startRunning];
     }
+    
     self.running = YES;
+    
     return error;
 }
 
@@ -265,19 +245,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark ------- 功能方法 ------
 
 - (void)startStop {
-  if ((!self.running && (self.delegate || self.onScreen)) ||
-      (!self.videoDataOutput && !self.metadataOutput &&
-       (self.delegate ||
-        (self.onScreen && (self.luminanceLayer || self.binaryLayer))))) {
-         [self start];
-       }
+  if (!self.running && self.onScreen) {
+      [self start];
+  }
 
-  if (self.running && !self.delegate && !self.onScreen) {
-    [self stop];
+  if (self.running || !self.onScreen) {
+      [self stop];
   }
 }
 
-
+//识别图片
 + (NSArray *)recognizeImage:(CGImageRef)image invert:(BOOL)invert {
     return [self recognizeImage:image invert:invert reader:[ZXMultiFormatReader reader] hints:[ZXDecodeHints hints]];
 }
@@ -323,6 +300,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     return mutableArray;
 }
 
+//生成二维码
 + (UIImage*)generateCodeWithString:(NSString*)str size:(CGSize)size codeFomart:(ZXBarcodeFormat)format {
     ZXMultiFormatWriter *writer = [[ZXMultiFormatWriter alloc] init];
     ZXBitMatrix *result = [writer encode:str
@@ -339,6 +317,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
+//改变灯光
 - (void)changeTorch {
     AVCaptureTorchMode torch = self.input.device.torchMode;
     
@@ -365,8 +344,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)setCamera:(int)camera {
     if (_camera != camera) {
         _camera = camera;
-        self.captureDevice = nil;
-        [self replaceInput];
+        _captureDevice = nil;
     }
 }
 
@@ -374,21 +352,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     _delegate = delegate;
 }
 
-- (void)setMirror:(BOOL)mirror {
-    if (_mirror != mirror) {
-        _mirror = mirror;
-        if (self.layer) {
-            CGAffineTransform transform = self.transform;
-            transform.a = - transform.a;
-            self.transform = transform;
-            [self.layer setAffineTransform:self.transform];
-        }
-    }
-}
-
 - (void)setTorch:(BOOL)torch {
     _torch = torch;
-    
     [self.input.device lockForConfiguration:nil];
     self.input.device.torchMode = self.torch ? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
     [self.input.device unlockForConfiguration];
@@ -427,35 +392,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         return NO;
     }
 }
-
-#pragma mark - Binary
-
-- (CALayer *)binary {
-    return self.binaryLayer;
-}
-
-- (void)setBinary:(BOOL)on {
-    if (on && !self.binaryLayer) {
-        self.binaryLayer = [CALayer layer];
-    } else if (!on && self.binaryLayer) {
-        self.binaryLayer = nil;
-    }
-}
-
-#pragma mark - Luminance
-
-- (CALayer *)luminance {
-    return self.luminanceLayer;
-}
-
-- (void)setLuminance:(BOOL)on {
-    if (on && !self.luminanceLayer) {
-        self.luminanceLayer = [CALayer layer];
-    } else if (!on && self.luminanceLayer) {
-        self.luminanceLayer = nil;
-    }
-}
-
 
 #pragma mark ----- Property Getters ------
 
@@ -545,11 +481,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     } else if (_camera == 1) {
         device = [self frontCamera];
     }
-    self.captureDevice = device;
+    _captureDevice = device;
     
     NSError *error = nil;
     if ([device lockForConfiguration:&error] || error) {
-        
+        //默认关闭闪光灯
         if ([device hasFlash]) {
             device.flashMode = AVCaptureFlashModeOff;
         }
@@ -586,7 +522,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (device) {
         NSError *error = nil;
         self.input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-        
         if (nil == self.input || error != nil) {
             NSDictionary *userInfo = @{NSLocalizedDescriptionKey:@"您已关闭相机使用权限，请至手机“设置->隐私->相机”中打开"};
             return ([NSError errorWithDomain:@"" code:-1 userInfo:userInfo]);
@@ -596,7 +531,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [self.session addInput:self.input];
     }
     [self.session commitConfiguration];
-    
     return nil;
 }
 
@@ -635,7 +569,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark -------工具方法------
 
 
-#pragma mark - Private
+#pragma mark ------ Private ----
 
 // Adapted from http://blog.coriolis.ch/2009/09/04/arbitrary-rotation-of-a-cgimage/ and https://github.com/JanX2/CreateRotateWriteCGImage
 - (CGImageRef)createRotatedImage:(CGImageRef)original degrees:(float)degrees CF_RETURNS_RETAINED {

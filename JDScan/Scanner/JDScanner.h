@@ -1,5 +1,6 @@
 //
 //  JDScanner.h
+//  JDScanner
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
@@ -19,7 +20,6 @@
 @property (nonatomic, assign) CGRect zxingRect;
 @property (nonatomic, assign) CGRect nativeRect;
 
-
 //显示预览的图片
 @property (nonatomic,copy) void(^preImageBlock)(UIImage *preImage);
 
@@ -32,8 +32,9 @@
  */
 - (instancetype)initWithPreView:(UIView*)preView block:(void(^)(NSArray<JDScanResult *> *result))block;
 
-
-//添加手势缩放功能
+/*!
+ 给view添加手势缩放功能
+ */
 - (void)zoomForView:(UIView *)view;
 
 /*!

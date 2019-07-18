@@ -1,8 +1,9 @@
 //
 //  JDScanAnimation.h
-//  JDScan
+//  JDScanner
 //
-//  Created by JD on 2019/7/15.
+//  Created by WJD on 19/4/3.
+//  Copyright (c) 2019 年 WJD. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

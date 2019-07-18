@@ -1,5 +1,6 @@
 //
 //  JDZXDetectorHook.h
+//  JDScanner
 //
 //  Created by WJD on 19/4/3.
 //  Copyright (c) 2019 年 WJD. All rights reserved.
@@ -37,33 +38,7 @@
     return [self rep_processFinderPatternInfo:info error:error];
 }
 
-- (BOOL)finderPatternHandler:(CGFloat)moduleSize {
-    BOOL shouldContinue = YES;
-    AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if ([captureDevice isRampingVideoZoom]) {
-        shouldContinue = NO;
-    }else{
-        if (moduleSize < MaxBarcodeModuleSize) {
-            shouldContinue = NO;
-            NSError *cerror = nil;
-            [captureDevice lockForConfiguration:&cerror];
-            CGFloat videoMaxZoomFactor = 3.0f;
-            if (captureDevice.activeFormat.videoMaxZoomFactor < videoMaxZoomFactor) {
-                videoMaxZoomFactor = captureDevice.activeFormat.videoMaxZoomFactor;
-            }
-            [captureDevice rampToVideoZoomFactor:videoMaxZoomFactor withRate:6.0f];
-            [captureDevice unlockForConfiguration];
-        }
-    }
-    
-    return shouldContinue;
-}
-
-
 @end
-
-
-
 
 @implementation JDZXDetectorHook
 
