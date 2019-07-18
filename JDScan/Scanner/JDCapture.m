@@ -286,7 +286,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 //        return mutableArray;
 //    }
     
-    //zxing 识别二维码
+    //zxing 识别码
     ZXCGImageLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:image];
     ZXHybridBinarizer *binarizer = [[ZXHybridBinarizer alloc] initWithSource:invert ? [source invert] : source];
     ZXBinaryBitmap *bitmap = [[ZXBinaryBitmap alloc] initWithBinarizer:binarizer];

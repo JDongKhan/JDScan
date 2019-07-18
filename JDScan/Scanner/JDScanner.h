@@ -64,19 +64,16 @@
 - (void)autoFocus;
 
 /*!
- *  生成二维码
+ *  生成码
  *
- *  @param str  二维码字符串
- *  @param size 二维码图片大小
+ *  @param str  字符串
+ *  @param size 图片大小
  *  @param format 码的类型
  *  @return 返回生成的图像
  */
 + (UIImage*)generateCodeWithString:(NSString*)str
                             size:(CGSize)size
                       codeFomart:(ZXBarcodeFormat)format;
-
-
-
 
 /*!
  *  识别各种码图片

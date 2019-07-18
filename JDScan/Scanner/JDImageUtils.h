@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface JDImageUtils : NSObject
 
-//图片二值化
+//图片处理
 + (UIImage *)translator:(UIImage *)image;
 
 @end

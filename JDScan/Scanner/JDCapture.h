@@ -96,7 +96,7 @@
 - (void)autoFocus;
 
 /**
- 识别二维码
+ 识别码
 
  @param image 图片
  @param invert 是否反转
@@ -106,12 +106,12 @@
 
 
 /**
- 创建二维码
+ 创建码
 
  @param str 字符串
  @param size z尺寸
  @param format 格式
- @return 二维码图片
+ @return 码图片
  */
 + (UIImage *)generateCodeWithString:(NSString*)str size:(CGSize)size codeFomart:(ZXBarcodeFormat)format;
 
