@@ -134,7 +134,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
       CFRelease(rotatedImage);
       rotatedImage = croppedImage;
     }
-    
     //识别原生图片
     NSArray *results = [JDCapture recognizeImage:rotatedImage invert:self.invert reader:self.reader hints:self.hints];
     //识别识别，开始使用opencv处理
@@ -158,9 +157,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
           [self.delegate captureResult:self result:results];
       });
     }
-    
     CGImageRelease(rotatedImage);
-    
   }
 }
 
@@ -216,7 +213,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     //添加output
-    [self stillImageOutput];
+    //[self stillImageOutput];
     [self videoDataOutput];
     [self metadataOutput];
     
@@ -261,7 +258,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 + (NSArray *)recognizeImage:(CGImageRef)image invert:(BOOL)invert reader:(id<ZXReader>)reader hints:(ZXDecodeHints *)hints {
     NSMutableArray<JDScanResult*> *mutableArray = nil;
-    
     //只能识别二维码  此处暂时用它做一层
     //据说这个方法很慢，有待研究
 //    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{ CIDetectorAccuracy : CIDetectorAccuracyHigh }];
@@ -283,6 +279,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     //zxing 识别码
     ZXCGImageLuminanceSource *source = [[ZXCGImageLuminanceSource alloc] initWithCGImage:image];
+    
     ZXHybridBinarizer *binarizer = [[ZXHybridBinarizer alloc] initWithSource:invert ? [source invert] : source];
     ZXBinaryBitmap *bitmap = [[ZXBinaryBitmap alloc] initWithBinarizer:binarizer];
     NSError *error;

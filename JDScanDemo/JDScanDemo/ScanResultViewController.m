@@ -10,6 +10,8 @@
 
 @interface ScanResultViewController ()
 
+@property (weak, nonatomic) IBOutlet UILabel *sourceLabel;
+
 @property (weak, nonatomic) IBOutlet UIImageView *scanImg;
 @property (weak, nonatomic) IBOutlet UILabel *labelScanText;
 @property (weak, nonatomic) IBOutlet UILabel *labelScanCodeType;
@@ -34,6 +36,7 @@
     _scanImg.image = _imgScan;
     _labelScanText.text = _strScan;
     _labelScanCodeType.text = [NSString stringWithFormat:@"类型:%@",_strCodeType];
+    _sourceLabel.text = _source;
 }
 
 

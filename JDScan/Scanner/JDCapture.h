@@ -104,12 +104,12 @@
 - (BOOL)hasFront;
 
 /*!
- 是否能打开灯光
+ 是否能打开手电筒
  */
 - (BOOL)hasTorch;
 
 /*!
- 灯光操作
+ 手电筒操作
  */
 - (void)setTorch:(BOOL)torch;
 - (void)changeTorch;

@@ -65,6 +65,7 @@
     vc.imgScan = [UIImage imageWithCGImage:strResult.image];
     vc.strScan = strResult.text;
     vc.strCodeType = strResult.type;
+    vc.source = strResult.source;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
