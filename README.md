@@ -1,7 +1,7 @@
 # AVFoundation + （OpenCV + Zxing）
 
 
-![](https://github.com/wangjindong/JDScan/blob/master/demo.gif)
+![](https://github.com/JDongKhan/JDScan/blob/master/demo.gif)
 
 
 ## 前言
