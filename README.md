@@ -1,6 +1,9 @@
 # AVFoundation + （OpenCV + Zxing）
 
 
+![](https://github.com/wangjindong/JDScan/blob/master/demo.gif)
+
+
 ## 前言
 
 二维码扫描是很多公司需要用到的一款工具，也是一个老大难问题，市面上免费的开源组件都只能覆盖到特定的场景，而实际生活、工作中场景非常复杂，有的二维码打印出来的，有点破损，也有的在电脑上受距离、光照等影响。 

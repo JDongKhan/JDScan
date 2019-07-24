@@ -10,11 +10,11 @@
 
 @interface ScanResultViewController ()
 
-@property (weak, nonatomic) IBOutlet UILabel *sourceLabel;
+@property (strong, nonatomic) UILabel *sourceLabel;
 
-@property (weak, nonatomic) IBOutlet UIImageView *scanImg;
-@property (weak, nonatomic) IBOutlet UILabel *labelScanText;
-@property (weak, nonatomic) IBOutlet UILabel *labelScanCodeType;
+@property (strong, nonatomic) UIImageView *scanImg;
+@property (strong, nonatomic) UILabel *labelScanText;
+@property (strong, nonatomic) UILabel *labelScanCodeType;
 @end
 
 @implementation ScanResultViewController
@@ -25,6 +25,24 @@
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.scanImg = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 200 )/2, 30, 200, 200)];
+    [self.view addSubview:self.scanImg];
+    
+    self.labelScanCodeType = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.scanImg.frame), self.view.frame.size.width, 50)];
+    self.labelScanCodeType.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.labelScanCodeType];
+    
+    self.sourceLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.labelScanCodeType.frame), self.view.frame.size.width, 30)];
+    self.sourceLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.sourceLabel];
+    
+    self.labelScanText = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height-160, self.view.frame.size.width-20, 150)];
+    self.labelScanText.textAlignment = NSTextAlignmentCenter;
+    self.labelScanText.numberOfLines = 0;
+    self.labelScanText.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    [self.view addSubview:self.labelScanText];
 }
 
 

@@ -41,7 +41,7 @@
     if (self.lightButton == nil && !self.hiddenLightButton) {
         UIButton *button = [[UIButton alloc] init];
         CGRect scanRect  = self.qRScanView.scanRect;
-        button.frame = CGRectMake((self.view.frame.size.width - 100)/2, CGRectGetMaxY(scanRect)+20, 100, 50);
+        button.frame = CGRectMake((self.view.frame.size.width - 100)/2, CGRectGetMaxY(scanRect)- 60, 100, 50);
         button.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [button setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_flash_nor"] forState:UIControlStateNormal];
         [button setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_scan_off"] forState:UIControlStateSelected];

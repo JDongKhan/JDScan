@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		279A4FB62ED0185485366753 /* libPods-JDScanDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7762146DC28EEA633668E5FF /* libPods-JDScanDemo.a */; };
+		6902A8D322E859550031A3B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6902A8D222E859550031A3B4 /* Images.xcassets */; };
 		6935764722DC519200EF8A7A /* DemoStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6935764622DC519200EF8A7A /* DemoStyle.m */; };
 		733CF2F81EE570F300AD1DC7 /* DemoScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 733CF2F71EE570F300AD1DC7 /* DemoScanViewController.m */; };
 		7349377C1E1F6B02007DDD7A /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 734937741E1F6A6E007DDD7A /* libiconv.2.4.0.tbd */; };
@@ -16,15 +17,12 @@
 		735461991E1E44B900F9F7FC /* UIImageView+CornerRadius.m in Sources */ = {isa = PBXBuildFile; fileRef = 735461981E1E44B900F9F7FC /* UIImageView+CornerRadius.m */; };
 		73584FB21E1CD62300ED6A60 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FB11E1CD62300ED6A60 /* main.m */; };
 		73584FB51E1CD62300ED6A60 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FB41E1CD62300ED6A60 /* AppDelegate.m */; };
-		73584FBD1E1CD62300ED6A60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73584FBC1E1CD62300ED6A60 /* Assets.xcassets */; };
-		73584FC01E1CD62300ED6A60 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73584FBE1E1CD62300ED6A60 /* LaunchScreen.storyboard */; };
 		73584FF11E1CE4B900ED6A60 /* UIActionSheet+JDAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FE81E1CE4B900ED6A60 /* UIActionSheet+JDAlertAction.m */; };
 		73584FF21E1CE4B900ED6A60 /* UIAlertController+supportedInterfaceOrientations.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FEA1E1CE4B900ED6A60 /* UIAlertController+supportedInterfaceOrientations.m */; };
 		73584FF31E1CE4B900ED6A60 /* UIAlertView+JDAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FEC1E1CE4B900ED6A60 /* UIAlertView+JDAlertAction.m */; };
 		73584FF51E1CE4B900ED6A60 /* JDAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FF01E1CE4B900ED6A60 /* JDAlertAction.m */; };
 		73584FF81E1CECC700ED6A60 /* DemoListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73584FF71E1CECC700ED6A60 /* DemoListTableViewController.m */; };
 		735850111E1CFA5800ED6A60 /* ScanResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7358500F1E1CFA5800ED6A60 /* ScanResultViewController.m */; };
-		735850121E1CFA5800ED6A60 /* ScanResultViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 735850101E1CFA5800ED6A60 /* ScanResultViewController.xib */; };
 		738C86A61EA7687700689E04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738C86A51EA7687700689E04 /* Foundation.framework */; };
 		738C86A81EA7688300689E04 /* libz.1.1.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 738C86A71EA7688300689E04 /* libz.1.1.3.tbd */; };
 		77576ECA1FEF741F00578A6B /* JDPermissionSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 77576EB81FEF741E00578A6B /* JDPermissionSetting.m */; };
@@ -35,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		5F97635BCA44FFDC4DF76740 /* Pods-JDScanDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JDScanDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-JDScanDemo/Pods-JDScanDemo.release.xcconfig"; sourceTree = "<group>"; };
+		6902A8D222E859550031A3B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6935764522DC519200EF8A7A /* DemoStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoStyle.h; sourceTree = "<group>"; };
 		6935764622DC519200EF8A7A /* DemoStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoStyle.m; sourceTree = "<group>"; };
 		6CEC1D273563FBA3D7419E06 /* Pods-LBXScanDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LBXScanDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LBXScanDemo/Pods-LBXScanDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -53,8 +52,6 @@
 		73584FB11E1CD62300ED6A60 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		73584FB31E1CD62300ED6A60 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		73584FB41E1CD62300ED6A60 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		73584FBC1E1CD62300ED6A60 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		73584FBF1E1CD62300ED6A60 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		73584FC11E1CD62300ED6A60 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		73584FE71E1CE4B900ED6A60 /* UIActionSheet+JDAlertAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIActionSheet+JDAlertAction.h"; sourceTree = "<group>"; };
 		73584FE81E1CE4B900ED6A60 /* UIActionSheet+JDAlertAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIActionSheet+JDAlertAction.m"; sourceTree = "<group>"; };
@@ -68,10 +65,8 @@
 		73584FF71E1CECC700ED6A60 /* DemoListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoListTableViewController.m; sourceTree = "<group>"; };
 		7358500E1E1CFA5800ED6A60 /* ScanResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanResultViewController.h; sourceTree = "<group>"; };
 		7358500F1E1CFA5800ED6A60 /* ScanResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanResultViewController.m; sourceTree = "<group>"; };
-		735850101E1CFA5800ED6A60 /* ScanResultViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanResultViewController.xib; sourceTree = "<group>"; };
 		738C86A51EA7687700689E04 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		738C86A71EA7688300689E04 /* libz.1.1.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.1.3.tbd; path = usr/lib/libz.1.1.3.tbd; sourceTree = SDKROOT; };
-		739FD57D1E8F58D2007D75D3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		77576EB31FEF741E00578A6B /* JDPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JDPermission.h; sourceTree = "<group>"; };
 		77576EB41FEF741E00578A6B /* JDPermissionCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JDPermissionCamera.h; sourceTree = "<group>"; };
 		77576EB81FEF741E00578A6B /* JDPermissionSetting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JDPermissionSetting.m; sourceTree = "<group>"; };
@@ -150,8 +145,6 @@
 				77576EAE1FEF741E00578A6B /* JDPermissions */,
 				73584FB31E1CD62300ED6A60 /* AppDelegate.h */,
 				73584FB41E1CD62300ED6A60 /* AppDelegate.m */,
-				73584FBC1E1CD62300ED6A60 /* Assets.xcassets */,
-				73584FBE1E1CD62300ED6A60 /* LaunchScreen.storyboard */,
 				73584FC11E1CD62300ED6A60 /* Info.plist */,
 				735461961E1E44B900F9F7FC /* CornerRadiusCategory */,
 				73584FE51E1CE4B900ED6A60 /* JDAlertAction */,
@@ -164,7 +157,7 @@
 				7354618C1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m */,
 				7358500E1E1CFA5800ED6A60 /* ScanResultViewController.h */,
 				7358500F1E1CFA5800ED6A60 /* ScanResultViewController.m */,
-				735850101E1CFA5800ED6A60 /* ScanResultViewController.xib */,
+				6902A8D222E859550031A3B4 /* Images.xcassets */,
 			);
 			path = JDScanDemo;
 			sourceTree = "<group>";
@@ -294,9 +287,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				735850121E1CFA5800ED6A60 /* ScanResultViewController.xib in Resources */,
-				73584FC01E1CD62300ED6A60 /* LaunchScreen.storyboard in Resources */,
-				73584FBD1E1CD62300ED6A60 /* Assets.xcassets in Resources */,
+				6902A8D322E859550031A3B4 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,18 +358,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		73584FBE1E1CD62300ED6A60 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				73584FBF1E1CD62300ED6A60 /* Base */,
-				739FD57D1E8F58D2007D75D3 /* zh-Hans */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		73584FC21E1CD62300ED6A60 /* Debug */ = {
@@ -476,6 +455,7 @@
 			baseConfigurationReference = 9C3A47C1D9790A2B13C41D80 /* Pods-JDScanDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = T7HCGCDP9B;
@@ -499,6 +479,7 @@
 			baseConfigurationReference = 5F97635BCA44FFDC4DF76740 /* Pods-JDScanDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";

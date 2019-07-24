@@ -276,7 +276,7 @@
 
 
 - (void)showNextVCWithScanResult:(JDScanResult*)strResult {
-    ScanResultViewController *vc = [ScanResultViewController new];
+    ScanResultViewController *vc = [[ScanResultViewController alloc] init];
     vc.imgScan = [UIImage imageWithCGImage:strResult.image];
     vc.strScan = strResult.text;
     vc.strCodeType = strResult.type;
