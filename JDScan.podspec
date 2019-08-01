@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = 'JDScan'
-    spec.version      = '2.0.5' 
+    spec.version      = '0.0.3' 
     spec.summary      = 'ios opencv zxing scan wrapper'
     spec.homepage     = 'https://github.com/JDongKhan'
     spec.license      = 'MIT'
