@@ -11,6 +11,8 @@
 #import <ZXingObjC/ZXBarcodeFormat.h>
 #import "JDScanResult.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
  *  ZXing扫码封装
  */
@@ -91,3 +93,5 @@
                  block:(void(^)(NSArray<JDScanResult *> *results))block;
 
 @end
+
+NS_ASSUME_NONNULL_END

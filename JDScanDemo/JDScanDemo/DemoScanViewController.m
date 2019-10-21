@@ -13,6 +13,8 @@
 
 @interface DemoScanViewController ()
 
+@property (nonatomic, strong) UILabel *tipsLable;
+
 @end
 
 @implementation DemoScanViewController
@@ -22,6 +24,13 @@
     // Do any additional setup after loading the view.
     self.cameraWakeMessage = @"相机启动中";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"调试" style:UIBarButtonItemStyleDone target:self action:@selector(setting)];
+    
+    self.tipsLable = [[UILabel alloc] init];
+    [self.view addSubview:self.tipsLable];
+    self.tipsLable.text = @"哈哈哈哈哈";
+    self.tipsLable.textAlignment = NSTextAlignmentCenter;
+    self.tipsLable.textColor = [UIColor whiteColor];
+    self.tipsLable.frame = CGRectMake((self.view.frame.size.width - 200)/2,self.qRScanView.scanRect.origin.y-50,200,50);
 }
 
 - (void)setting {

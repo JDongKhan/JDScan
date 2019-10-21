@@ -28,6 +28,10 @@
         _cornerWidth = 24;
         _cornerHeight = 24;
         _cornerLineWidth = 2;
+        
+        _lightButtonOffset = CGPointMake(0, 20);
+        _onLightImage = [UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_flash_nor"];
+        _offLightImage = [UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_scan_off"];
     }
     return self;
 }

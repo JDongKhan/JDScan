@@ -85,6 +85,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) UIColor *backgroundColor;
 
+@property (nonatomic, assign) CGPoint lightButtonOffset;
+
+@property (nonatomic, strong) UIImage *onLightImage;
+
+@property (nonatomic, strong) UIImage *offLightImage;
+
 /**
  扫描器
  */

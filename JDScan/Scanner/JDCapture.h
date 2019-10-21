@@ -11,6 +11,8 @@
 #import "JDScanResult.h"
 #import "JDCaptureDelegate.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface JDCapture : NSObject <CAAction>
 
 /*!
@@ -157,3 +159,5 @@
 + (UIImage *)generateCodeWithString:(NSString*)str size:(CGSize)size codeFomart:(ZXBarcodeFormat)format;
 
 @end
+
+NS_ASSUME_NONNULL_END

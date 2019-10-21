@@ -41,10 +41,10 @@
     if (self.lightButton == nil && !self.hiddenLightButton) {
         UIButton *button = [[UIButton alloc] init];
         CGRect scanRect  = self.qRScanView.scanRect;
-        button.frame = CGRectMake((self.view.frame.size.width - 100)/2, CGRectGetMaxY(scanRect)- 60, 100, 50);
+        button.frame = CGRectMake((self.view.frame.size.width - 100)/2 + self.style.lightButtonOffset.x, CGRectGetMaxY(scanRect) + self.style.lightButtonOffset.y, 100, 50);
         button.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [button setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_flash_nor"] forState:UIControlStateNormal];
-        [button setImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_btn_scan_off"] forState:UIControlStateSelected];
+        [button setImage:self.style.onLightImage forState:UIControlStateNormal];
+        [button setImage:self.style.offLightImage forState:UIControlStateSelected];
         [button addTarget:self action:@selector(openOrClose:) forControlEvents:UIControlEventTouchUpInside];
         self.lightButton = button;
     }

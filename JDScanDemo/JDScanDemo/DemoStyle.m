@@ -40,6 +40,7 @@
     style.borderWidth = 0.0f;
     style.supportAutoFocus = YES;
     style.supportAutoZoom = YES;
+    style.lightButtonOffset = CGPointMake(0, -60);
     style.scanAnimation = [JDScanNetAnimation animationWithImage:[UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_full_net"]];
     style.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
     return style;
