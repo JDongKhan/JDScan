@@ -10,8 +10,8 @@
 		279A4FB62ED0185485366753 /* libPods-JDScanDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7762146DC28EEA633668E5FF /* libPods-JDScanDemo.a */; };
 		6902A8D322E859550031A3B4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6902A8D222E859550031A3B4 /* Images.xcassets */; };
 		6935764722DC519200EF8A7A /* DemoStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 6935764622DC519200EF8A7A /* DemoStyle.m */; };
+		69FAFDF72C18193700C74396 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 69FAFDF62C18193700C74396 /* libiconv.tbd */; };
 		733CF2F81EE570F300AD1DC7 /* DemoScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 733CF2F71EE570F300AD1DC7 /* DemoScanViewController.m */; };
-		7349377C1E1F6B02007DDD7A /* libiconv.2.4.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 734937741E1F6A6E007DDD7A /* libiconv.2.4.0.tbd */; };
 		734E165E1E237B2F00120818 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 734E165D1E237B2F00120818 /* README.md */; };
 		7354618D1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7354618C1E1E402600F9F7FC /* DemoCreateBarCodeViewController.m */; };
 		735461991E1E44B900F9F7FC /* UIImageView+CornerRadius.m in Sources */ = {isa = PBXBuildFile; fileRef = 735461981E1E44B900F9F7FC /* UIImageView+CornerRadius.m */; };
@@ -36,6 +36,7 @@
 		6902A8D222E859550031A3B4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6935764522DC519200EF8A7A /* DemoStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoStyle.h; sourceTree = "<group>"; };
 		6935764622DC519200EF8A7A /* DemoStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoStyle.m; sourceTree = "<group>"; };
+		69FAFDF62C18193700C74396 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		6CEC1D273563FBA3D7419E06 /* Pods-LBXScanDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LBXScanDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-LBXScanDemo/Pods-LBXScanDemo.release.xcconfig"; sourceTree = "<group>"; };
 		733CF2F61EE570F300AD1DC7 /* DemoScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoScanViewController.h; sourceTree = "<group>"; };
 		733CF2F71EE570F300AD1DC7 /* DemoScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoScanViewController.m; sourceTree = "<group>"; };
@@ -85,9 +86,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69FAFDF72C18193700C74396 /* libiconv.tbd in Frameworks */,
 				738C86A81EA7688300689E04 /* libz.1.1.3.tbd in Frameworks */,
 				738C86A61EA7687700689E04 /* Foundation.framework in Frameworks */,
-				7349377C1E1F6B02007DDD7A /* libiconv.2.4.0.tbd in Frameworks */,
 				279A4FB62ED0185485366753 /* libPods-JDScanDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,6 +99,7 @@
 		734937731E1F6A6E007DDD7A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				69FAFDF62C18193700C74396 /* libiconv.tbd */,
 				738C86A71EA7688300689E04 /* libz.1.1.3.tbd */,
 				738C86A51EA7687700689E04 /* Foundation.framework */,
 				7349377A1E1F6ABC007DDD7A /* CoreGraphics.framework */,
@@ -252,8 +254,8 @@
 				TargetAttributes = {
 					73584FAC1E1CD62300ED6A60 = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = T7HCGCDP9B;
-						ProvisioningStyle = Manual;
+						DevelopmentTeam = SNNMFZU6M8;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -456,21 +458,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = T7HCGCDP9B;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = SNNMFZU6M8;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = JDScanDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.pp.sports1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jd.scan.try;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "development pp wildcard";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -487,7 +489,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = JDScanDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pp.sports1;
