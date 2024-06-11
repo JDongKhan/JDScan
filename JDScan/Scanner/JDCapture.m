@@ -136,7 +136,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     //识别原生图片
     NSArray *results = [JDCapture recognizeImage:rotatedImage invert:self.invert reader:self.reader hints:self.hints];
-    //识别识别，开始使用opencv处理
+    //识别失败，开始使用opencv处理
     if (results == nil) {
         //将图片处理一下下
         UIImage *image1 = [JDImageUtils translator:[UIImage imageWithCGImage:rotatedImage]];
